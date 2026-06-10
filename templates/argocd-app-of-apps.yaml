@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-app-of-apps
+  namespace: argocd
+spec:
+  sources:
+    - repoURL: git@github.com:polarpoint-io/argocd-app-of-apps.git
+      targetRevision: "{{ .Values.aoa_version }}"
+      path: "."
+      helm:
+        valueFiles:
+          - $values/{{ .Values.environment }}-aoa-values.yaml
+    - repoURL: git@github.com:polarpoint-io/argocd-core.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  project: argocd-config
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false

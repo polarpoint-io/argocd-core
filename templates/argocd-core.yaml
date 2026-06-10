@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-config
+  namespace: argocd
+spec:
+  source:
+    repoURL: git@github.com:polarpoint-io/argocd-core.git
+    targetRevision: main
+    path: "."
+    helm:
+      valueFiles:
+        - "{{ .Values.environment }}-core-values.yaml"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  project: argocd-config
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false

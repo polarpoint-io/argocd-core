@@ -1,0 +1,118 @@
+---
+global:
+  namespace: argocd
+  defaultCluster: https://kubernetes.default.svc
+  clusterName: non-prod
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+  defaultRepositories:
+    - url: 'git@github.com:polarpoint-io**'
+    - url: 'https://argoproj.github.io/argo-helm'
+
+privateGitCredentialsTemplates:
+  - name: polarpoint-io
+    url: "git@github.com:polarpoint-io/"
+
+privateHelmCredentialsTemplates: []
+
+privateGitRepositories: []
+
+publicHelmRepositories:
+  - name: argo-helm
+    url: "https://argoproj.github.io/argo-helm"
+
+privateHelmRepositories: []
+
+clusters:
+  - name: deploy
+    url: https://kubernetes.default.svc
+    local: true
+    labels:
+      env: non-prod
+      role: deploy
+  # Downstream clusters join here as they are (re)built on RKE2,
+  # e.g. the kube-mstr-01/02 cluster once stood up:
+  # - name: kube-non-prod
+  #   url: "https://kube-api.polarpoint.io:6443"   # EDIT
+  #   labels:
+  #     env: non-prod
+  #     role: workloads
+
+projects:
+  - name: argocd-config
+    permissions:
+      admin:
+        description: "Admin Access"
+        groups:
+          - polarpoint-argocd-admin
+      rw:
+        description: "Read-Write Access"
+        groups:
+          - polarpoint-argocd-rw
+      ro:
+        description: "Read-Only Access"
+        groups:
+          - polarpoint-argocd-ro
+    destinations:
+      - name: default
+        namespace: "*"
+        server: https://kubernetes.default.svc
+    applications: []
+
+  - name: controller
+    permissions:
+      admin:
+        description: "Admin Access"
+        groups:
+          - polarpoint-argocd-admin
+      rw:
+        description: "Read-Write Access"
+        groups:
+          - polarpoint-argocd-rw
+      ro:
+        description: "Read-Only Access"
+        groups:
+          - polarpoint-argocd-ro
+    destinations:
+      - name: default
+        namespace: "*"
+        server: https://kubernetes.default.svc
+    applications:
+      - name: controller-applications
+        url: 'git@github.com:polarpoint-io/argocd-controller-applications.git'
+        path: releases
+        targetRevision: main
+        valuesFiles:
+          - values.yaml
+          - global-values-non-prod.yaml
+        namespace: argocd
+
+  - name: tooling
+    permissions:
+      admin:
+        description: "Admin Access"
+        groups:
+          - polarpoint-argocd-admin
+      rw:
+        description: "Read-Write Access"
+        groups:
+          - polarpoint-argocd-rw
+      ro:
+        description: "Read-Only Access"
+        groups:
+          - polarpoint-argocd-ro
+    destinations:
+      - name: default
+        namespace: "*"
+        server: https://kubernetes.default.svc
+    applications:
+      - name: tooling-applications
+        url: 'git@github.com:polarpoint-io/argocd-tooling-applications.git'
+        path: releases
+        targetRevision: main
+        valuesFiles:
+          - values.yaml
+          - global-values-non-prod.yaml
+        namespace: argocd

@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  sources:
+    - repoURL: https://argoproj.github.io/argo-helm
+      chart: "argo-cd"
+      targetRevision: "{{ .Values.argocd_chart_revision }}"
+      helm:
+        valueFiles:
+          - $values/{{ .Values.environment }}-argocd-values.yaml
+    - repoURL: git@github.com:polarpoint-io/argocd-core.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  project: argocd-config
+  syncPolicy:
+    syncOptions:
+    - ApplyOutOfSyncOnly=true
