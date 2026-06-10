@@ -42,13 +42,21 @@ configs:
       g, polarpoint-argocd-admin, role:admin
 
 server:
+  # Expose the UI over Tailscale via the operator (foundational app).
+  # Device joins the tailnet as 'deploy' -> https://deploy.<tailnet>.ts.net
+  # For deploy.polarpoint.io: add a CNAME (public DNS) or a Tailscale
+  # split-DNS record pointing deploy.polarpoint.io at the ts.net name /
+  # tailnet IP of the device.
   ingress:
     enabled: true
-    ingressClassName: nginx
+    ingressClassName: tailscale
     annotations:
-      nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    hostname: deploy.polarpoint.io            # EDIT
-    tls: true
+      tailscale.com/hostname: deploy
+    hostname: deploy.polarpoint.io
+    extraTls:
+      - hosts:
+          - deploy
+    tls: false
 
 controller:
   replicas: 1
