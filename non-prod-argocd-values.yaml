@@ -42,21 +42,33 @@ configs:
       g, polarpoint-argocd-admin, role:admin
 
 server:
-  # Expose the UI over Tailscale via the operator (foundational app).
-  # Device joins the tailnet as 'deploy' -> https://deploy.<tailnet>.ts.net
-  # For deploy.polarpoint.io: add a CNAME (public DNS) or a Tailscale
-  # split-DNS record pointing deploy.polarpoint.io at the ts.net name /
-  # tailnet IP of the device.
   ingress:
-    enabled: true
-    ingressClassName: tailscale
-    annotations:
-      tailscale.com/hostname: deploy
-    hostname: deploy.polarpoint.io
-    extraTls:
-      - hosts:
-          - deploy
-    tls: false
+    enabled: false
+
+# Expose the UI over Tailscale via the operator (foundational app), using
+# the documented defaultBackend form. Device joins the tailnet as 'deploy'
+# -> https://deploy.<tailnet>.ts.net
+# For deploy.polarpoint.io: add a CNAME (public DNS) or a Tailscale
+# split-DNS record pointing deploy.polarpoint.io at the ts.net name /
+# tailnet IP of the device.
+extraObjects:
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      name: argocd-server-tailscale
+      namespace: argocd
+      annotations:
+        tailscale.com/hostname: deploy
+    spec:
+      ingressClassName: tailscale
+      defaultBackend:
+        service:
+          name: argocd-server
+          port:
+            number: 80
+      tls:
+        - hosts:
+            - deploy
 
 controller:
   replicas: 1
