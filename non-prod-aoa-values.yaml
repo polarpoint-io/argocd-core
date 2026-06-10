@@ -12,6 +12,8 @@ global:
     - url: 'https://argoproj.github.io/argo-helm'
     - url: 'https://polarpoint-io.github.io/charts'
     - url: 'https://polarpoint-io.github.io/**'
+    - url: 'https://pkgs.tailscale.com/helmcharts'
+    - url: 'https://charts.crossplane.io/stable'
 
 privateGitCredentialsTemplates:
   - name: polarpoint-io
@@ -60,6 +62,45 @@ projects:
         namespace: "*"
         server: https://kubernetes.default.svc
     applications: []
+
+  - name: foundational
+    permissions:
+      admin:
+        description: "Admin Access"
+        groups:
+          - polarpoint-argocd-admin
+      rw:
+        description: "Read-Write Access"
+        groups:
+          - polarpoint-argocd-rw
+      ro:
+        description: "Read-Only Access"
+        groups:
+          - polarpoint-argocd-ro
+    destinations:
+      - name: default
+        namespace: "*"
+        server: https://kubernetes.default.svc
+      - name: tooling
+        namespace: "*"
+        server: https://192.168.11.80:6443
+    applications:
+      - name: foundational-applications-controller
+        url: 'git@github.com:polarpoint-io/argocd-foundational-applications.git'
+        path: releases
+        targetRevision: main
+        valuesFiles:
+          - values.yaml
+          - global-values-non-prod.yaml
+        namespace: argocd
+      - name: foundational-applications-tooling
+        url: 'git@github.com:polarpoint-io/argocd-foundational-applications.git'
+        path: releases
+        targetRevision: main
+        valuesFiles:
+          - values.yaml
+          - global-values-non-prod-tooling.yaml
+        namespace: argocd
 
   - name: controller
     permissions:
