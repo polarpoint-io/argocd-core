@@ -14,7 +14,7 @@ global:
     - url: 'https://polarpoint-io.github.io/**'
     - url: 'https://pkgs.tailscale.com/helmcharts'
     - url: 'https://charts.crossplane.io/stable'
-    - url: 'oci://ghcr.io/stacklok/toolhive'
+    - url: 'ghcr.io/stacklok/toolhive'
 
 privateGitCredentialsTemplates:
   - name: polarpoint-io
@@ -27,6 +27,9 @@ privateGitRepositories: []
 publicHelmRepositories:
   - name: argo-helm
     url: "https://argoproj.github.io/argo-helm"
+  - name: stacklok-toolhive
+    url: "ghcr.io/stacklok/toolhive"
+    enableOCI: true
 
 privateHelmRepositories: []
 
