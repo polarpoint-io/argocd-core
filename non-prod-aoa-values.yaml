@@ -10,6 +10,8 @@ global:
   defaultRepositories:
     - url: 'git@github.com:polarpoint-io**'
     - url: 'https://argoproj.github.io/argo-helm'
+    - url: 'https://polarpoint-io.github.io/charts'
+    - url: 'https://polarpoint-io.github.io/**'
 
 privateGitCredentialsTemplates:
   - name: polarpoint-io
