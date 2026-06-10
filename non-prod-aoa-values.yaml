@@ -32,13 +32,11 @@ clusters:
     labels:
       env: non-prod
       role: deploy
-  # Downstream clusters join here as they are (re)built on RKE2,
-  # e.g. the kube-mstr-01/02 cluster once stood up:
-  # - name: kube-non-prod
-  #   url: "https://kube-api.polarpoint.io:6443"   # EDIT
-  #   labels:
-  #     env: non-prod
-  #     role: workloads
+  - name: tooling
+    url: "https://192.168.11.80:6443"
+    labels:
+      env: non-prod
+      role: tooling
 
 projects:
   - name: argocd-config
@@ -107,6 +105,9 @@ projects:
       - name: default
         namespace: "*"
         server: https://kubernetes.default.svc
+      - name: tooling
+        namespace: "*"
+        server: https://192.168.11.80:6443
     applications:
       - name: tooling-applications
         url: 'git@github.com:polarpoint-io/argocd-tooling-applications.git'
