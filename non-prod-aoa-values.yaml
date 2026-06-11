@@ -16,6 +16,7 @@ global:
     - url: 'https://charts.crossplane.io/stable'
     - url: 'ghcr.io/stacklok/toolhive'
     - url: 'https://charts.jetstack.io'
+    - url: 'https://backstage.github.io/charts'
 
 privateGitCredentialsTemplates:
   - name: polarpoint-io
