@@ -17,6 +17,7 @@ global:
     - url: 'ghcr.io/stacklok/toolhive'
     - url: 'https://charts.jetstack.io'
     - url: 'https://backstage.github.io/charts'
+    - url: 'https://go.temporal.io/helm-charts/'
 
 privateGitCredentialsTemplates:
   - name: polarpoint-io
@@ -32,6 +33,8 @@ publicHelmRepositories:
   - name: stacklok-toolhive
     url: "ghcr.io/stacklok/toolhive"
     enableOCI: true
+  - name: temporal-repo
+    url: "https://go.temporal.io/helm-charts/"
 
 privateHelmRepositories: []
 
