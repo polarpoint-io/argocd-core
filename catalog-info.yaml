@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: argocd-core
+  description: Bootstrap chart for ArgoCD — multi-source Applications, per-environment values, self-managing configuration.
+  annotations:
+    github.com/project-slug: polarpoint-io/argocd-core
+spec:
+  type: infrastructure
+  owner: group:sre-team
+  lifecycle: production
