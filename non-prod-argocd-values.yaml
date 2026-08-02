@@ -49,10 +49,15 @@ server:
   # argocd-server-tls (deploy.polarpoint.io, DNS-01 via Route53) - see
   # argocd-foundational-applications cert-manager-manifests.
   # DNS: deploy.polarpoint.io CNAME -> deploy.<tailnet>.ts.net
+  # funnel: true publishes this same hostname to the public internet via
+  # Tailscale Funnel (Tailscale's own relay), on top of the tailnet-only
+  # access above. No extra auth layer added - argocd-server's own
+  # login/RBAC (configs.rbac above) is the only gate on public traffic.
   service:
     annotations:
       tailscale.com/expose: "true"
       tailscale.com/hostname: deploy
+      tailscale.com/funnel: "true"
 
 controller:
   replicas: 1
