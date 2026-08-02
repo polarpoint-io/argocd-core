@@ -1,3 +1,3 @@
 environment: non-prod
 aoa_version: "v1.10.0"        # git tag on polarpoint-io/argocd-app-of-apps
-argocd_chart_revision: "9.5.20"   # argo-helm chart (ArgoCD v3.4.3)
+argocd_chart_revision: "10.2.1"   # argo-helm chart (ArgoCD v3.4.5) - latest published, was 9.5.20 (v3.4.3)
