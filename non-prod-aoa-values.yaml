@@ -50,6 +50,11 @@ clusters:
     labels:
       env: non-prod
       role: tooling
+  - name: cluster3
+    url: "https://192.168.11.63:6443"
+    labels:
+      env: non-prod
+      role: cluster3
 
 projects:
   - name: argocd-config
