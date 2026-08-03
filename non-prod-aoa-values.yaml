@@ -23,6 +23,7 @@ global:
     - url: 'ghcr.io/stacklok/toolhive-registry-server'
     - url: 'ghcr.io/stacklok'
     - url: 'ghcr.io/intuitem/helm-charts/ce'
+    - url: 'https://robusta-charts.storage.googleapis.com'
 
 privateGitCredentialsTemplates:
   - name: polarpoint-io
@@ -51,6 +52,8 @@ publicHelmRepositories:
   - name: intuitem-helm-charts
     url: "ghcr.io/intuitem/helm-charts/ce"
     enableOCI: true
+  - name: robusta-charts
+    url: "https://robusta-charts.storage.googleapis.com"
 
 privateHelmRepositories: []
 
