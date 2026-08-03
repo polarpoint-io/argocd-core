@@ -134,13 +134,13 @@ projects:
           - values.yaml
           - global-values-non-prod-tooling.yaml
         namespace: argocd
-      - name: foundational-applications-cluster3
+      - name: foundational-applications-multitenant
         url: 'git@github.com:polarpoint-io/argocd-foundational-applications.git'
         path: releases
         targetRevision: main
         valuesFiles:
           - values.yaml
-          - global-values-non-prod-cluster3.yaml
+          - global-values-non-prod-multitenant.yaml
         namespace: argocd
 
   - name: controller
