@@ -54,11 +54,11 @@ clusters:
     labels:
       env: non-prod
       role: tooling
-  - name: cluster3
+  - name: multitenant
     url: "https://192.168.11.63:6443"
     labels:
       env: non-prod
-      role: cluster3
+      role: multitenant
 
 projects:
   - name: argocd-config
@@ -102,7 +102,7 @@ projects:
       - name: tooling
         namespace: "*"
         server: https://192.168.11.80:6443
-      - name: cluster3
+      - name: multitenant
         namespace: "*"
         server: https://192.168.11.63:6443
     applications:
