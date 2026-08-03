@@ -35,6 +35,9 @@ publicHelmRepositories:
     enableOCI: true
   - name: temporal-repo
     url: "https://go.temporal.io/helm-charts/"
+  - name: akuity-kargo-charts
+    url: "ghcr.io/akuity/kargo-charts"
+    enableOCI: true
 
 privateHelmRepositories: []
 
@@ -98,6 +101,9 @@ projects:
       - name: tooling
         namespace: "*"
         server: https://192.168.11.80:6443
+      - name: cluster3
+        namespace: "*"
+        server: https://192.168.11.63:6443
     applications:
       - name: foundational-applications-controller
         url: 'git@github.com:polarpoint-io/argocd-foundational-applications.git'
@@ -114,6 +120,14 @@ projects:
         valuesFiles:
           - values.yaml
           - global-values-non-prod-tooling.yaml
+        namespace: argocd
+      - name: foundational-applications-cluster3
+        url: 'git@github.com:polarpoint-io/argocd-foundational-applications.git'
+        path: releases
+        targetRevision: main
+        valuesFiles:
+          - values.yaml
+          - global-values-non-prod-cluster3.yaml
         namespace: argocd
 
   - name: controller
