@@ -22,6 +22,7 @@ global:
     - url: 'https://charts.bitnami.com/bitnami'
     - url: 'ghcr.io/stacklok/toolhive-registry-server'
     - url: 'ghcr.io/stacklok'
+    - url: 'ghcr.io/intuitem/helm-charts'
 
 privateGitCredentialsTemplates:
   - name: polarpoint-io
@@ -46,6 +47,9 @@ publicHelmRepositories:
     url: "https://charts.bitnami.com/bitnami"
   - name: stacklok-toolhive-registry-server
     url: "ghcr.io/stacklok"
+    enableOCI: true
+  - name: intuitem-helm-charts
+    url: "ghcr.io/intuitem/helm-charts"
     enableOCI: true
 
 privateHelmRepositories: []
