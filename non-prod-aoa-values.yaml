@@ -24,6 +24,7 @@ global:
     - url: 'ghcr.io/stacklok'
     - url: 'ghcr.io/intuitem/helm-charts/ce'
     - url: 'https://robusta-charts.storage.googleapis.com'
+    - url: 'https://percona.github.io/percona-helm-charts/'
 
 privateGitCredentialsTemplates:
   - name: polarpoint-io
@@ -54,6 +55,8 @@ publicHelmRepositories:
     enableOCI: true
   - name: robusta-charts
     url: "https://robusta-charts.storage.googleapis.com"
+  - name: percona-helm-charts
+    url: "https://percona.github.io/percona-helm-charts/"
 
 privateHelmRepositories: []
 
