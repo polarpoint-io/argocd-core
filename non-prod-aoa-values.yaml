@@ -21,6 +21,7 @@ global:
     - url: 'ghcr.io/akuity/kargo-charts'
     - url: 'https://charts.bitnami.com/bitnami'
     - url: 'ghcr.io/stacklok/toolhive-registry-server'
+    - url: 'ghcr.io/stacklok'
 
 privateGitCredentialsTemplates:
   - name: polarpoint-io
@@ -44,7 +45,7 @@ publicHelmRepositories:
   - name: bitnami
     url: "https://charts.bitnami.com/bitnami"
   - name: stacklok-toolhive-registry-server
-    url: "ghcr.io/stacklok/toolhive-registry-server"
+    url: "ghcr.io/stacklok"
     enableOCI: true
 
 privateHelmRepositories: []
