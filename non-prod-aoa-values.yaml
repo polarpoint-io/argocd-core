@@ -201,3 +201,11 @@ projects:
           - values.yaml
           - global-values-non-prod.yaml
         namespace: argocd
+        # Authorizes Kargo Stages to force a sync after they've pushed a
+        # descriptor change - this app renders the CHILD Applications that
+        # actually deploy each chart, so promotions must sync this parent
+        # first before the child picks up its new targetRevision. Comma-
+        # separate additional "project:stage" entries as more Kargo
+        # pipelines touch apps in this repo.
+        annotations:
+          kargo.akuity.io/authorized-stage: "ciso-assistant-promotion:non-prod"
