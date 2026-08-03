@@ -19,6 +19,8 @@ global:
     - url: 'https://backstage.github.io/charts'
     - url: 'https://go.temporal.io/helm-charts/'
     - url: 'ghcr.io/akuity/kargo-charts'
+    - url: 'https://charts.bitnami.com/bitnami'
+    - url: 'ghcr.io/stacklok/toolhive-registry-server'
 
 privateGitCredentialsTemplates:
   - name: polarpoint-io
@@ -38,6 +40,11 @@ publicHelmRepositories:
     url: "https://go.temporal.io/helm-charts/"
   - name: akuity-kargo-charts
     url: "ghcr.io/akuity/kargo-charts"
+    enableOCI: true
+  - name: bitnami
+    url: "https://charts.bitnami.com/bitnami"
+  - name: stacklok-toolhive-registry-server
+    url: "ghcr.io/stacklok/toolhive-registry-server"
     enableOCI: true
 
 privateHelmRepositories: []
