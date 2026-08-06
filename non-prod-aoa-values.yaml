@@ -262,13 +262,6 @@ projects:
           \ change baked\n  # into new image builds.\n\npostgresql:\n  enabled: true\n  fullnameOverride: backstage-postgresql\n\
           \  image:\n    repository: bitnamilegacy/postgresql\n  auth:\n    username: backstage\n    database:\
           \ backstage\n    existingSecret: backstage-db\n  primary:\n    persistence:\n      size: 8Gi\n"
-      - name: controller-nginx-manifests-non-prod
-        appLabel: ingress-nginx
-        url: git@github.com:polarpoint-io/argocd-applications.git
-        path: platform-engineering/controller-nginx-manifests/non-prod
-        namespace: ingress-nginx
-        labels:
-          service: controller
       - name: crossplane-manifests-non-prod
         appLabel: crossplane-manifests
         url: git@github.com:polarpoint-io/argocd-applications.git
