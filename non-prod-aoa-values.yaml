@@ -4,6 +4,11 @@ environment: non-prod
 
 global:
   namespace: argocd
+  # Values files for upstream charts live in argocd-applications under
+  # <concern>/<app>/<env>/, referenced as $values by multi-source Applications.
+  # An env folder is what lets prod differ from non-prod without a second chart.
+  valuesRepo: git@github.com:polarpoint-io/argocd-applications.git
+  valuesRevision: main
   defaultCluster: https://kubernetes.default.svc
   clusterName: non-prod
   syncPolicy:
@@ -199,8 +204,7 @@ projects:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
-    values: |
-      installCRDs: true
+    valuesPath: foundational/common/external-secrets/non-prod/values.yaml
 
   # ---- security -----------------------------------------------------------
   - name: cert-manager
@@ -252,6 +256,45 @@ projects:
                       secretAccessKeySecretRef:
                         name: route53-credentials
                         key: secret-access-key
+  # ---- security -----------------------------------------------------------
+  # Runtime threat detection, one agent per node. falcosidekick is off until
+  # there is somewhere to send events.
+  - name: falco
+    url: https://falcosecurity.github.io/charts
+    chart: falco
+    targetRevision: 9.1.0
+    namespace: falco
+    labels:
+      service: foundational
+    valuesPath: foundational/security/falco/non-prod/values.yaml
+
+  # ---- observability --------------------------------------------------------
+  # Alloy is the whole observability stack: no self-hosted Prometheus or Grafana,
+  # everything ships to Grafana Cloud.
+  #
+  # It will not become Healthy until the secret store holds a grafana-cloud entry
+  # (prometheus-url, prometheus-username, loki-url, loki-username, api-token).
+  # Leave it unsynced until then rather than running a collector that cannot
+  # authenticate.
+  #
+  # The cluster label has to be inline: a values file fetched from git gets no
+  # per-cluster substitution, because the generator only expands the ApplicationSet
+  # template. Inline values also win over valueFiles, which is what makes the pair
+  # work together.
+  - name: grafana-alloy
+    url: https://grafana.github.io/helm-charts
+    chart: alloy
+    targetRevision: 1.11.0
+    namespace: grafana-alloy
+    labels:
+      service: foundational
+    valuesPath: foundational/observability/grafana-alloy/non-prod/values.yaml
+    values: |
+      alloy:
+        extraEnv:
+          - name: CLUSTER_NAME
+            value: "{{short}}"
+
   - name: local-path-provisioner
     url: git@github.com:polarpoint-io/argocd-applications.git
     path: foundational/common/local-path-provisioner/non-prod
