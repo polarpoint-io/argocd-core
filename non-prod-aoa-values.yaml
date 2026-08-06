@@ -185,6 +185,11 @@ projects:
     chart: external-secrets
     targetRevision: 2.8.0
     namespace: external-secrets
+    # The hand-installed release is named "external-secrets", so its objects are
+    # external-secrets, -webhook, -cert-controller. Without pinning this, ArgoCD
+    # would use the Application name (external-secrets-non-prod-tooling and so on)
+    # and render a second, parallel operator instead of adopting this one.
+    releaseName: external-secrets
     labels:
       service: foundational
     # ESO's CRDs are large enough that a client-side apply exceeds the 262144-byte
