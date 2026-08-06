@@ -206,7 +206,7 @@ projects:
                         key: secret-access-key
   - name: local-path-provisioner
     url: git@github.com:polarpoint-io/argocd-applications.git
-    path: common/local-path-provisioner/non-prod
+    path: foundational/common/local-path-provisioner/non-prod
     namespace: local-path-storage
     labels:
       service: foundational
