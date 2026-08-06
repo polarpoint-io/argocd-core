@@ -28,6 +28,10 @@ global:
   - url: 'ghcr.io/intuitem/helm-charts/ce'
   - url: 'https://robusta-charts.storage.googleapis.com'
   - url: 'https://percona.github.io/percona-helm-charts/'
+  - url: 'https://charts.external-secrets.io'
+  - url: 'https://prometheus-community.github.io/helm-charts'
+  - url: 'https://grafana.github.io/helm-charts'
+  - url: 'https://falcosecurity.github.io/charts'
 
 privateGitCredentialsTemplates:
 - name: polarpoint-io
@@ -60,6 +64,14 @@ publicHelmRepositories:
   url: "https://robusta-charts.storage.googleapis.com"
 - name: percona-helm-charts
   url: "https://percona.github.io/percona-helm-charts/"
+- name: external-secrets
+  url: "https://charts.external-secrets.io"
+- name: prometheus-community
+  url: "https://prometheus-community.github.io/helm-charts"
+- name: grafana
+  url: "https://grafana.github.io/helm-charts"
+- name: falcosecurity
+  url: "https://falcosecurity.github.io/charts"
 
 privateHelmRepositories: []
 
@@ -155,6 +167,37 @@ projects:
     short: multitenant
     server: https://192.168.11.63:6443
   applicationSets:
+
+  # ---- common -------------------------------------------------------------
+  # External Secrets Operator. Every ExternalSecret in the estate depends on it,
+  # and until now it was installed by hand with plain Helm on all three clusters
+  # and tracked by nothing - so a rebuilt cluster would not have reproduced it.
+  #
+  # The clusters had drifted apart: controller and tooling on 2.6.0, multitenant
+  # already on 2.8.0. Pinned to 2.8.0 because adoption has to pick one, and the
+  # only alternative was downgrading multitenant across a CRD boundary.
+  #
+  # installCRDs matches what the hand-installed release actually used - recovered
+  # from its Helm release secret rather than guessed - so the only intended change
+  # on controller and tooling is the version itself.
+  - name: external-secrets
+    url: https://charts.external-secrets.io
+    chart: external-secrets
+    targetRevision: 2.8.0
+    namespace: external-secrets
+    labels:
+      service: foundational
+    # ESO's CRDs are large enough that a client-side apply exceeds the 262144-byte
+    # last-applied-configuration annotation limit and fails. Server-side apply has
+    # no such limit. 2.6.0 -> 2.8.0 is additive - two new generator CRDs, nothing
+    # removed - so the upgrade itself is forward-only.
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    values: |
+      installCRDs: true
+
+  # ---- security -----------------------------------------------------------
   - name: cert-manager
     url: https://charts.jetstack.io
     chart: cert-manager
