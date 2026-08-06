@@ -203,9 +203,10 @@ projects:
                       accessKeyID: AKIA4FNGZSXLDQERDR5O
                       secretAccessKeySecretRef:
                         name: route53-credentials
+                        key: secret-access-key
   - name: local-path-provisioner
     url: git@github.com:polarpoint-io/argocd-applications.git
-    path: platform-engineering/local-path-provisioner/non-prod
+    path: foundational/local-path-provisioner/non-prod
     namespace: local-path-storage
     labels:
       service: foundational
