@@ -1,4 +1,3 @@
----
 # The environment these declarations describe. Used for the `env` label on every
 # generated Application, so it has to match the cluster suffix convention.
 environment: non-prod
@@ -12,831 +11,1014 @@ global:
       prune: false
       selfHeal: false
   defaultRepositories:
-    - url: 'git@github.com:polarpoint-io**'
-    - url: 'https://argoproj.github.io/argo-helm'
-    - url: 'https://polarpoint-io.github.io/charts'
-    - url: 'https://polarpoint-io.github.io/**'
-    - url: 'https://pkgs.tailscale.com/helmcharts'
-    - url: 'https://charts.crossplane.io/stable'
-    - url: 'ghcr.io/stacklok/toolhive'
-    - url: 'https://charts.jetstack.io'
-    - url: 'https://backstage.github.io/charts'
-    - url: 'https://go.temporal.io/helm-charts/'
-    - url: 'ghcr.io/akuity/kargo-charts'
-    - url: 'https://charts.bitnami.com/bitnami'
-    - url: 'ghcr.io/stacklok/toolhive-registry-server'
-    - url: 'ghcr.io/stacklok'
-    - url: 'ghcr.io/intuitem/helm-charts/ce'
-    - url: 'https://robusta-charts.storage.googleapis.com'
-    - url: 'https://percona.github.io/percona-helm-charts/'
+  - url: 'git@github.com:polarpoint-io**'
+  - url: 'https://argoproj.github.io/argo-helm'
+  - url: 'https://polarpoint-io.github.io/charts'
+  - url: 'https://polarpoint-io.github.io/**'
+  - url: 'https://pkgs.tailscale.com/helmcharts'
+  - url: 'https://charts.crossplane.io/stable'
+  - url: 'ghcr.io/stacklok/toolhive'
+  - url: 'https://charts.jetstack.io'
+  - url: 'https://backstage.github.io/charts'
+  - url: 'https://go.temporal.io/helm-charts/'
+  - url: 'ghcr.io/akuity/kargo-charts'
+  - url: 'https://charts.bitnami.com/bitnami'
+  - url: 'ghcr.io/stacklok/toolhive-registry-server'
+  - url: 'ghcr.io/stacklok'
+  - url: 'ghcr.io/intuitem/helm-charts/ce'
+  - url: 'https://robusta-charts.storage.googleapis.com'
+  - url: 'https://percona.github.io/percona-helm-charts/'
 
 privateGitCredentialsTemplates:
-  - name: polarpoint-io
-    url: "git@github.com:polarpoint-io/"
+- name: polarpoint-io
+  url: "git@github.com:polarpoint-io/"
 
 privateHelmCredentialsTemplates: []
 
 privateGitRepositories: []
 
 publicHelmRepositories:
-  - name: argo-helm
-    url: "https://argoproj.github.io/argo-helm"
-  - name: stacklok-toolhive
-    url: "ghcr.io/stacklok/toolhive"
-    enableOCI: true
-  - name: temporal-repo
-    url: "https://go.temporal.io/helm-charts/"
-  - name: akuity-kargo-charts
-    url: "ghcr.io/akuity/kargo-charts"
-    enableOCI: true
-  - name: bitnami
-    url: "https://charts.bitnami.com/bitnami"
-  - name: stacklok-toolhive-registry-server
-    url: "ghcr.io/stacklok"
-    enableOCI: true
-  - name: intuitem-helm-charts
-    url: "ghcr.io/intuitem/helm-charts/ce"
-    enableOCI: true
-  - name: robusta-charts
-    url: "https://robusta-charts.storage.googleapis.com"
-  - name: percona-helm-charts
-    url: "https://percona.github.io/percona-helm-charts/"
+- name: argo-helm
+  url: "https://argoproj.github.io/argo-helm"
+- name: stacklok-toolhive
+  url: "ghcr.io/stacklok/toolhive"
+  enableOCI: true
+- name: temporal-repo
+  url: "https://go.temporal.io/helm-charts/"
+- name: akuity-kargo-charts
+  url: "ghcr.io/akuity/kargo-charts"
+  enableOCI: true
+- name: bitnami
+  url: "https://charts.bitnami.com/bitnami"
+- name: stacklok-toolhive-registry-server
+  url: "ghcr.io/stacklok"
+  enableOCI: true
+- name: intuitem-helm-charts
+  url: "ghcr.io/intuitem/helm-charts/ce"
+  enableOCI: true
+- name: robusta-charts
+  url: "https://robusta-charts.storage.googleapis.com"
+- name: percona-helm-charts
+  url: "https://percona.github.io/percona-helm-charts/"
 
 privateHelmRepositories: []
 
 clusters:
-  - name: deploy
-    url: https://kubernetes.default.svc
-    local: true
-    labels:
-      env: non-prod
-      role: deploy
-  - name: tooling
-    url: "https://192.168.11.80:6443"
-    labels:
-      env: non-prod
-      role: tooling
-  - name: multitenant
-    url: "https://192.168.11.63:6443"
-    labels:
-      env: non-prod
-      role: multitenant
+- name: deploy
+  url: https://kubernetes.default.svc
+  local: true
+  labels:
+    env: non-prod
+    role: deploy
+- name: tooling
+  url: "https://192.168.11.80:6443"
+  labels:
+    env: non-prod
+    role: tooling
+- name: multitenant
+  url: "https://192.168.11.63:6443"
+  labels:
+    env: non-prod
+    role: multitenant
 
 projects:
-  - name: argocd-config
-    permissions:
-      admin:
-        description: "Admin Access"
-        groups:
-          - polarpoint-argocd-admin
-      rw:
-        description: "Read-Write Access"
-        groups:
-          - polarpoint-argocd-rw
-      ro:
-        description: "Read-Only Access"
-        groups:
-          - polarpoint-argocd-ro
-    destinations:
-      - name: default
-        namespace: "*"
-        server: https://kubernetes.default.svc
-    applications: []
+- name: argocd-config
+  permissions:
+    admin:
+      description: "Admin Access"
+      groups:
+      - polarpoint-argocd-admin
+    rw:
+      description: "Read-Write Access"
+      groups:
+      - polarpoint-argocd-rw
+    ro:
+      description: "Read-Only Access"
+      groups:
+      - polarpoint-argocd-ro
+  destinations:
+  - name: default
+    namespace: "*"
+    server: https://kubernetes.default.svc
+  applications:
+  - name: argocd-manifests-non-prod
+    appLabel: argocd
+    url: git@github.com:polarpoint-io/helm-library-manifests.git
+    path: .
+    targetRevision: v2.1.0
+    namespace: argocd
+    labels:
+      service: argocd-config
+    values: |
+      certificates:
+        - name: argocd-server-tls
+          namespace: argocd
+          host: deploy.polarpoint.io
 
-  - name: foundational
-    permissions:
-      admin:
-        description: "Admin Access"
-        groups:
-          - polarpoint-argocd-admin
-      rw:
-        description: "Read-Write Access"
-        groups:
-          - polarpoint-argocd-rw
-      ro:
-        description: "Read-Only Access"
-        groups:
-          - polarpoint-argocd-ro
-    destinations:
-      - name: default
-        namespace: "*"
-        server: https://kubernetes.default.svc
-      - name: tooling
-        namespace: "*"
-        server: https://192.168.11.80:6443
-      - name: multitenant
-        namespace: "*"
-        server: https://192.168.11.63:6443
-    # Every cluster the foundational baseline is installed on. Adding a cluster
-    # here installs the whole baseline on it - that is the point of expressing
-    # foundational as ApplicationSets rather than as one entry per cluster.
-    #
-    # `short` is the cluster's own name, used where a value differs only by
-    # cluster (tailscale's operator hostname). `argocdHost` is empty except on the
-    # cluster that actually runs ArgoCD.
-    clusters:
-      - name: non-prod
-        short: controller
-        server: https://kubernetes.default.svc
-        argocdHost: deploy.polarpoint.io
-      - name: non-prod-tooling
-        short: tooling
-        server: https://192.168.11.80:6443
-        argocdHost: ""
-      - name: non-prod-multitenant
-        short: multitenant
-        server: https://192.168.11.63:6443
-        argocdHost: ""
+- name: foundational
+  permissions:
+    admin:
+      description: "Admin Access"
+      groups:
+      - polarpoint-argocd-admin
+    rw:
+      description: "Read-Write Access"
+      groups:
+      - polarpoint-argocd-rw
+    ro:
+      description: "Read-Only Access"
+      groups:
+      - polarpoint-argocd-ro
+  destinations:
+  - name: default
+    namespace: "*"
+    server: https://kubernetes.default.svc
+  - name: tooling
+    namespace: "*"
+    server: https://192.168.11.80:6443
+  - name: multitenant
+    namespace: "*"
+    server: https://192.168.11.63:6443
 
-    # Fanned across every cluster above. Foundational is the per-cluster baseline,
-    # so each of these is declared once and installed everywhere; anything that
-    # runs on a single cluster belongs in another project's `applications:`.
-    applicationSets:
-      - name: cert-manager
-        url: https://charts.jetstack.io
-        chart: cert-manager
-        targetRevision: v1.21.1
-        namespace: cert-manager
-        labels:
-          service: foundational
-        values: |
-          crds:
-            enabled: true
+  # Every cluster the foundational baseline is installed on. Adding a cluster here
+  # installs the whole baseline on it - that is the point of expressing foundational
+  # as ApplicationSets rather than as one entry per cluster. `short` is the cluster's
+  # own name, used where a value differs only by cluster (tailscale's hostname).
+  clusters:
+  - name: non-prod
+    short: controller
+    server: https://kubernetes.default.svc
+  - name: non-prod-tooling
+    short: tooling
+    server: https://192.168.11.80:6443
+  - name: non-prod-multitenant
+    short: multitenant
+    server: https://192.168.11.63:6443
+  applicationSets:
+  - name: cert-manager
+    url: https://charts.jetstack.io
+    chart: cert-manager
+    targetRevision: v1.21.1
+    namespace: cert-manager
+    labels:
+      service: foundational
+    values: |
+      crds:
+        enabled: true
 
-      # argocdHost is empty on clusters that do not run ArgoCD, which switches off
-      # the argocd-server Certificate. That gate is why this is one chart now
-      # instead of three copies differing by a single file.
-      - name: cert-manager-manifests
-        appLabel: cert-manager
-        url: git@github.com:polarpoint-io/argocd-applications.git
-        path: security/cert-manager-manifests/non-prod
-        namespace: cert-manager
-        labels:
-          service: foundational
-        values: |
-          argocdHost: "{{argocdHost}}"
-
-      - name: local-path-provisioner
-        url: git@github.com:polarpoint-io/argocd-applications.git
-        path: platform-engineering/local-path-provisioner/non-prod
-        namespace: local-path-storage
-        labels:
-          service: foundational
-        values: |
-          storageClass:
-            create: true
-            defaultClass: true
-            name: local-path
+  # The argocd-server Certificate used to live in this chart, which is why there
+  # were three per-cluster copies of it. It now belongs to argocd-manifests in the
+  # argocd-config project, so what is left is identical on every cluster.
+  - name: cert-manager-manifests
+    appLabel: cert-manager
+    url: git@github.com:polarpoint-io/helm-library-manifests.git
+    path: .
+    targetRevision: v2.1.0
+    namespace: cert-manager
+    labels:
+      service: foundational
+    values: |
+      externalSecrets:
+        - secretName: route53-credentials
+          namespace: cert-manager
+          refreshInterval: 5m
+          data:
+            - {secretKey: secret-access-key, remoteRef: {key: route53-credentials, property: secret-access-key}}
+      customResources:
+        - apiVersion: cert-manager.io/v1
+          kind: ClusterIssuer
+          metadata:
+            name: letsencrypt-dns01
+          spec:
+            acme:
+              server: https://acme-v02.api.letsencrypt.org/directory
+              email: surj@polarpoint.io
+              privateKeySecretRef:
+                name: letsencrypt-dns01-account
+              solvers:
+                - dns01:
+                    route53:
+                      region: eu-west-1
+                      hostedZoneID: ZND0T184EWHJG
+                      accessKeyID: AKIA4FNGZSXLDQERDR5O
+                      secretAccessKeySecretRef:
+                        name: route53-credentials
+  - name: local-path-provisioner
+    url: git@github.com:polarpoint-io/argocd-applications.git
+    path: platform-engineering/local-path-provisioner/non-prod
+    namespace: local-path-storage
+    labels:
+      service: foundational
+    values: |
+      storageClass:
+        create: true
+        defaultClass: true
+        name: local-path
 
       # The operator registers itself in the tailnet under a per-cluster hostname,
       # which is the only thing that varies across the three.
-      - name: tailscale-operator
-        url: https://pkgs.tailscale.com/helmcharts
-        chart: tailscale-operator
-        targetRevision: 1.98.4
-        namespace: tailscale
-        labels:
-          service: foundational
-        values: |
-          operatorConfig:
-            defaultTags:
-              - tag:k8s
-            hostname: tailscale-operator-{{short}}-non-prod
-          oauth: {}   # supplied via the operator-oauth secret (ExternalSecret below)
+  - name: tailscale-operator
+    url: https://pkgs.tailscale.com/helmcharts
+    chart: tailscale-operator
+    targetRevision: 1.98.4
+    namespace: tailscale
+    labels:
+      service: foundational
+    values: |
+      operatorConfig:
+        defaultTags:
+          - tag:k8s
+        hostname: tailscale-operator-{{short}}-non-prod
+      oauth: {}   # supplied via the operator-oauth secret (ExternalSecret below)
 
-      - name: tailscale-operator-manifests
-        appLabel: tailscale-operator
-        url: git@github.com:polarpoint-io/argocd-applications.git
-        path: security/tailscale-operator-manifests/non-prod
-        namespace: tailscale
-        labels:
-          service: foundational
+  - name: tailscale-operator-manifests
+    appLabel: tailscale-operator
+    url: git@github.com:polarpoint-io/helm-library-manifests.git
+    path: .
+    namespace: tailscale
+    labels:
+      service: foundational
 
     # Nothing here. Foundational is expressed as applicationSets above, because
     # every one of these components belongs on every cluster.
-    applications: []
+    targetRevision: v2.1.0
+    values: |
+      externalSecrets:
+        - secretName: operator-oauth
+          namespace: tailscale
+          refreshInterval: 1m
+          data:
+            - {secretKey: client_id, remoteRef: {key: tailscale-oauth, property: client_id}}
+            - {secretKey: client_secret, remoteRef: {key: tailscale-oauth, property: client_secret}}
+  applications: []
 
-  - name: controller
-    permissions:
-      admin:
-        description: "Admin Access"
-        groups:
-          - polarpoint-argocd-admin
-      rw:
-        description: "Read-Write Access"
-        groups:
-          - polarpoint-argocd-rw
-      ro:
-        description: "Read-Only Access"
-        groups:
-          - polarpoint-argocd-ro
-    destinations:
-      - name: default
-        namespace: "*"
-        server: https://kubernetes.default.svc
-    applications:
+- name: controller
+  permissions:
+    admin:
+      description: "Admin Access"
+      groups:
+      - polarpoint-argocd-admin
+    rw:
+      description: "Read-Write Access"
+      groups:
+      - polarpoint-argocd-rw
+    ro:
+      description: "Read-Only Access"
+      groups:
+      - polarpoint-argocd-ro
+  destinations:
+  - name: default
+    namespace: "*"
+    server: https://kubernetes.default.svc
+  applications:
 
-      - name: backstage-manifests-non-prod
-        appLabel: backstage
-        url: git@github.com:polarpoint-io/argocd-applications.git
-        path: platform-engineering/backstage-manifests/non-prod
-        namespace: platform
-        labels:
-          service: platform
-      - name: backstage-non-prod
-        appLabel: backstage
-        url: https://backstage.github.io/charts
-        chart: backstage
-        targetRevision: 2.8.2
-        namespace: platform
-        labels:
-          service: platform
-        values: "fullnameOverride: backstage\n\nglobal:\n  security:\n    allowInsecureImages: true\n\nbackstage:\n\
-          \  image:\n    registry: ghcr.io\n    repository: polarpoint-io/backstage\n    tag: \"latest\"\n \
-          \   pullPolicy: Always\n  containerPorts:\n    backend: 7007\n  command: [\"node\", \"packages/backend\"\
-          ]\n  args: [\"--config\", \"app-config.yaml\", \"--config\", \"app-config.production.yaml\"]\n  extraEnvVars:\n\
-          \    - name: POSTGRES_HOST\n      value: backstage-postgresql\n  extraEnvVarsSecrets:\n    - backstage-database-authentication\n\
-          \    - backstage-kubernetes-authentication\n    - backstage-github-authentication\n  # app-config.yaml\
-          \ / app-config.production.yaml are baked into the image\n  # (see args above) \u2014 do NOT mount\
-          \ the old RKE1-era backstage-app-config\n  # ConfigMap over them, it silently shadows every config\
-          \ change baked\n  # into new image builds.\n\npostgresql:\n  enabled: true\n  fullnameOverride: backstage-postgresql\n\
-          \  image:\n    repository: bitnamilegacy/postgresql\n  auth:\n    username: backstage\n    database:\
-          \ backstage\n    existingSecret: backstage-db\n  primary:\n    persistence:\n      size: 8Gi\n"
-      - name: crossplane-manifests-non-prod
-        appLabel: crossplane-manifests
-        url: git@github.com:polarpoint-io/argocd-applications.git
-        path: platform-engineering/crossplane-manifests/non-prod
-        namespace: iac
-        labels:
-          service: controller
-      - name: crossplane-non-prod
-        appLabel: crossplane
-        url: https://charts.crossplane.io/stable
-        chart: crossplane
-        targetRevision: 2.3.4
-        namespace: iac
-        labels:
-          service: controller
-        values: |
-          replicas: 1
+  - name: backstage-manifests-non-prod
+    appLabel: backstage
+    url: git@github.com:polarpoint-io/helm-library-manifests.git
+    path: .
+    namespace: platform
+    labels:
+      service: platform
+    targetRevision: v2.1.0
+    values: |
+      certificates:
+        - name: platform-tls
+          namespace: platform
+          host: platform.polarpoint.io
+      externalSecrets:
+        - secretName: backstage-database-authentication
+          namespace: platform
+          refreshInterval: 5m
+          data:
+            - {secretKey: POSTGRES_USER, remoteRef: {key: backstage, property: postgres-user}}
+            - {secretKey: POSTGRES_PASSWORD, remoteRef: {key: backstage, property: postgres-password}}
+            - {secretKey: POSTGRES_PORT, remoteRef: {key: backstage, property: postgres-port}}
+        - secretName: backstage-db
+          namespace: platform
+          refreshInterval: 5m
+          data:
+            - {secretKey: postgres-password, remoteRef: {key: backstage, property: postgres-password}}
+            - {secretKey: password, remoteRef: {key: backstage, property: postgres-password}}
+            - {secretKey: user-password, remoteRef: {key: backstage, property: postgres-password}}
+            - {secretKey: admin-password, remoteRef: {key: backstage, property: postgres-password}}
+        - secretName: backstage-github-authentication
+          namespace: platform
+          refreshInterval: 5m
+          data:
+            - {secretKey: AUTH_GITHUB_CLIENT_ID, remoteRef: {key: backstage, property: github-client-id}}
+            - {secretKey: AUTH_GITHUB_CLIENT_SECRET, remoteRef: {key: backstage, property: github-client-secret}}
+            - {secretKey: GITHUB_APP_ID, remoteRef: {key: backstage, property: github-app-id}}
+            - {secretKey: GITHUB_APP_PRIVATE_KEY, remoteRef: {key: backstage, property: github-app-private-key}}
+            - {secretKey: GITHUB_APP_WEBHOOK_SECRET, remoteRef: {key: backstage, property: github-app-webhook-secret}}
+        - secretName: backstage-kubernetes-authentication
+          namespace: platform
+          refreshInterval: 5m
+          data:
+            - {secretKey: K8S_TOKEN, remoteRef: {key: backstage, property: kubernetes-tooling-token}}
+            - {secretKey: K8S_URL, remoteRef: {key: backstage, property: kubernetes-tooling-url}}
+            - {secretKey: K8S_CONTROLLER_TOKEN, remoteRef: {key: backstage, property: kubernetes-controller-token}}
+            - {secretKey: K8S_CONTROLLER_URL, remoteRef: {key: backstage, property: kubernetes-controller-url}}
+      tlsProxies:
+        - name: platform
+          namespace: platform
+          host: platform.polarpoint.io
+          certSecret: platform-tls
+          maxBodySize: 100m
+          routes:
+            - {path: "/", upstream: "http://backstage:7007", websocket: true, forwardedHost: false}
+      customResources:
+        - apiVersion: v1
+          kind: ServiceAccount
+          metadata: {name: backstage-controller-viewer, namespace: platform}
+        - apiVersion: v1
+          kind: Secret
+          metadata:
+            name: backstage-controller-viewer-token
+            namespace: platform
+            annotations: {kubernetes.io/service-account.name: backstage-controller-viewer}
+          type: kubernetes.io/service-account-token
+        - apiVersion: rbac.authorization.k8s.io/v1
+          kind: ClusterRole
+          metadata: {name: backstage-controller-viewer}
+          rules:
+            - apiGroups: ['*']
+              resources: ['*']
+              verbs: ['get', 'list', 'watch']
+            - nonResourceURLs: ['*']
+              verbs: ['get']
+        - apiVersion: rbac.authorization.k8s.io/v1
+          kind: ClusterRoleBinding
+          metadata: {name: backstage-controller-viewer}
+          roleRef:
+            apiGroup: rbac.authorization.k8s.io
+            kind: ClusterRole
+            name: backstage-controller-viewer
+          subjects:
+            - kind: ServiceAccount
+              name: backstage-controller-viewer
+              namespace: platform
+  - name: backstage-non-prod
+    appLabel: backstage
+    url: https://backstage.github.io/charts
+    chart: backstage
+    targetRevision: 2.8.2
+    namespace: platform
+    labels:
+      service: platform
+    values: "fullnameOverride: backstage\n\nglobal:\n  security:\n    allowInsecureImages: true\n\nbackstage:\n  image:\n    registry: ghcr.io\n    repository: polarpoint-io/backstage\n    tag: \"latest\"\n    pullPolicy: Always\n  containerPorts:\n    backend: 7007\n  command: [\"node\", \"packages/backend\"]\n  args: [\"--config\", \"app-config.yaml\", \"--config\", \"app-config.production.yaml\"]\n  extraEnvVars:\n    - name: POSTGRES_HOST\n      value: backstage-postgresql\n  extraEnvVarsSecrets:\n    - backstage-database-authentication\n    - backstage-kubernetes-authentication\n    - backstage-github-authentication\n  # app-config.yaml / app-config.production.yaml are baked into the image\n  # (see args above) — do NOT mount the old RKE1-era backstage-app-config\n  # ConfigMap over them, it silently shadows every config change baked\n  # into new image builds.\n\npostgresql:\n  enabled: true\n  fullnameOverride: backstage-postgresql\n  image:\n    repository: bitnamilegacy/postgresql\n  auth:\n    username: backstage\n    database: backstage\n    existingSecret: backstage-db\n  primary:\n    persistence:\n      size: 8Gi\n"
+  - name: crossplane-manifests-non-prod
+    appLabel: crossplane-manifests
+    url: git@github.com:polarpoint-io/helm-library-manifests.git
+    path: .
+    namespace: iac
+    labels:
+      service: controller
+    targetRevision: v2.1.0
+    values: |
+      externalSecrets:
+        - secretName: aws-credentials
+          namespace: iac
+          refreshInterval: 5m
+          annotations: {argocd.argoproj.io/sync-wave: "2"}
+          template:
+            data:
+              credentials: |
+                [default]
+                aws_access_key_id = {{ .accessKeyId }}
+                aws_secret_access_key = {{ .secretAccessKey }}
+          data:
+            - {secretKey: accessKeyId, remoteRef: {key: aws-credentials, property: access-key-id}}
+            - {secretKey: secretAccessKey, remoteRef: {key: aws-credentials, property: secret-access-key}}
+      customResources:
+        - apiVersion: pkg.crossplane.io/v1beta1
+          kind: Function
+          metadata:
+            name: function-patch-and-transform
+            annotations: {argocd.argoproj.io/sync-wave: "1"}
+          spec:
+            package: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform:v0.7.0
+            packagePullPolicy: IfNotPresent
+            revisionActivationPolicy: Automatic
+        - apiVersion: pkg.crossplane.io/v1
+          kind: Provider
+          metadata:
+            name: upbound-provider-family-aws
+            annotations: {argocd.argoproj.io/sync-wave: "1"}
+          spec:
+            package: xpkg.upbound.io/upbound/provider-family-aws:v1.18.0
+            packagePullPolicy: IfNotPresent
+            revisionActivationPolicy: Automatic
+        - apiVersion: aws.upbound.io/v1beta1
+          kind: ProviderConfig
+          metadata:
+            name: default
+            annotations: {argocd.argoproj.io/sync-wave: "3"}
+          spec:
+            credentials:
+              source: Secret
+              secretRef: {namespace: iac, name: aws-credentials, key: credentials}
+  - name: crossplane-non-prod
+    appLabel: crossplane
+    url: https://charts.crossplane.io/stable
+    chart: crossplane
+    targetRevision: 2.3.4
+    namespace: iac
+    labels:
+      service: controller
+    values: |
+      replicas: 1
 
-          provider:
-            packages: []
+      provider:
+        packages: []
 
-          configuration:
-            packages: []
+      configuration:
+        packages: []
 
-          metrics:
-            enabled: false
+      metrics:
+        enabled: false
 
-          resourcesCrossplane:
-            limits:
-              cpu: 500m
-              memory: 1Gi
-            requests:
-              cpu: 100m
-              memory: 256Mi
-      - name: kargo-manifests-non-prod
-        appLabel: kargo
-        url: git@github.com:polarpoint-io/argocd-applications.git
-        path: platform-engineering/kargo-manifests/non-prod
-        namespace: kargo
-        labels:
-          service: controller
-      - name: kargo-projects-non-prod
-        appLabel: kargo
-        url: git@github.com:polarpoint-io/argocd-applications.git
-        path: platform-engineering/kargo-projects/non-prod
-        namespace: kargo
-        labels:
-          service: controller
-      - name: kargo-non-prod
-        appLabel: kargo
-        url: ghcr.io/akuity/kargo-charts
-        chart: kargo
-        targetRevision: 1.11.0
-        namespace: kargo
-        labels:
-          service: controller
-        values: |
-          api:
-            host: promote.polarpoint.io
-            secretManagementEnabled: true
-            secret:
-              name: kargo-api-secret     # ESO-managed - see kargo-manifests
-            tls:
-              enabled: true
-              selfSignedCert: false
-              secretName: kargo-api-tls  # cert-manager Certificate - see kargo-manifests
-            service:
-              annotations:
-                tailscale.com/expose: "true"
-                tailscale.com/hostname: promote
-            argocd:
-              urls:
-                "": https://deploy.polarpoint.io
-      - name: mongostate-crossplane-non-prod
-        appLabel: mongostate-crossplane
-        url: git@github.com:polarpoint-io/mongostate-crossplane.git
-        path: manifests
-        namespace: crossplane-system
-        labels:
-          service: controller
-      - name: psmdb-operator-crds-non-prod
-        appLabel: psmdb-operator
-        url: https://percona.github.io/percona-helm-charts/
-        chart: psmdb-operator-crds
-        targetRevision: 1.23.0
-        namespace: psmdb-operator
-        labels:
-          service: controller
-      - name: psmdb-operator-non-prod
-        appLabel: psmdb-operator
-        url: https://percona.github.io/percona-helm-charts/
-        chart: psmdb-operator
-        targetRevision: 1.23.0
-        namespace: psmdb-operator
-        labels:
-          service: controller
-        values: |
-          watchAllNamespaces: true
+      resourcesCrossplane:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 100m
+          memory: 256Mi
+  - name: kargo-manifests-non-prod
+    appLabel: kargo
+    url: git@github.com:polarpoint-io/helm-library-manifests.git
+    path: .
+    namespace: kargo
+    labels:
+      service: controller
+    targetRevision: v2.1.0
+    values: |
+      certificates:
+        - name: kargo-api-tls
+          namespace: kargo
+          host: promote.polarpoint.io
+      externalSecrets:
+        - secretName: kargo-api-secret
+          namespace: kargo
+          refreshInterval: 5m
+          data:
+            - {secretKey: ADMIN_ACCOUNT_PASSWORD_HASH, remoteRef: {key: kargo, property: admin-password-hash}}
+            - {secretKey: ADMIN_ACCOUNT_TOKEN_SIGNING_KEY, remoteRef: {key: kargo, property: admin-token-signing-key}}
+  - name: kargo-projects-non-prod
+    appLabel: kargo
+    url: git@github.com:polarpoint-io/argocd-applications.git
+    path: platform-engineering/kargo-projects/non-prod
+    namespace: kargo
+    labels:
+      service: controller
+  - name: kargo-non-prod
+    appLabel: kargo
+    url: ghcr.io/akuity/kargo-charts
+    chart: kargo
+    targetRevision: 1.11.0
+    namespace: kargo
+    labels:
+      service: controller
+    values: |
+      api:
+        host: promote.polarpoint.io
+        secretManagementEnabled: true
+        secret:
+          name: kargo-api-secret     # ESO-managed - see kargo-manifests
+        tls:
+          enabled: true
+          selfSignedCert: false
+          secretName: kargo-api-tls  # cert-manager Certificate - see kargo-manifests
+        service:
+          annotations:
+            tailscale.com/expose: "true"
+            tailscale.com/hostname: promote
+        argocd:
+          urls:
+            "": https://deploy.polarpoint.io
+  - name: mongostate-crossplane-non-prod
+    appLabel: mongostate-crossplane
+    url: git@github.com:polarpoint-io/mongostate-crossplane.git
+    path: manifests
+    namespace: crossplane-system
+    labels:
+      service: controller
+  - name: psmdb-operator-crds-non-prod
+    appLabel: psmdb-operator
+    url: https://percona.github.io/percona-helm-charts/
+    chart: psmdb-operator-crds
+    targetRevision: 1.23.0
+    namespace: psmdb-operator
+    labels:
+      service: controller
+  - name: psmdb-operator-non-prod
+    appLabel: psmdb-operator
+    url: https://percona.github.io/percona-helm-charts/
+    chart: psmdb-operator
+    targetRevision: 1.23.0
+    namespace: psmdb-operator
+    labels:
+      service: controller
+    values: |
+      watchAllNamespaces: true
 
+- name: tooling
+  permissions:
+    admin:
+      description: "Admin Access"
+      groups:
+      - polarpoint-argocd-admin
+    rw:
+      description: "Read-Write Access"
+      groups:
+      - polarpoint-argocd-rw
+    ro:
+      description: "Read-Only Access"
+      groups:
+      - polarpoint-argocd-ro
+  destinations:
+  - name: default
+    namespace: "*"
+    server: https://kubernetes.default.svc
   - name: tooling
-    permissions:
-      admin:
-        description: "Admin Access"
-        groups:
-          - polarpoint-argocd-admin
-      rw:
-        description: "Read-Write Access"
-        groups:
-          - polarpoint-argocd-rw
-      ro:
-        description: "Read-Only Access"
-        groups:
-          - polarpoint-argocd-ro
-    destinations:
-      - name: default
-        namespace: "*"
-        server: https://kubernetes.default.svc
-      - name: tooling
-        namespace: "*"
-        server: https://192.168.11.80:6443
+    namespace: "*"
+    server: https://192.168.11.80:6443
       # Workloads that have to run on multitenant belong here, not in the
       # foundational project - foundational is for the per-cluster baseline
       # every cluster gets (cert-manager, external-secrets, tailscale-operator,
       # the observability and security stacks), not for one-off applications
       # that happen to need a particular cluster.
-      - name: multitenant
-        namespace: "*"
-        server: https://192.168.11.63:6443
-    applications:
+  - name: multitenant
+    namespace: "*"
+    server: https://192.168.11.63:6443
+  applications:
 
-      - name: ciso-assistant-manifests-non-prod
-        appLabel: ciso-assistant
-        url: git@github.com:polarpoint-io/helm-library-manifests.git
-        path: .
-        targetRevision: v2.1.0
-        namespace: ciso-assistant
-        targetCluster: https://192.168.11.80:6443
-        labels:
-          service: tooling
-        values: |
-          global:
-            secretStore:
-              name: cluster-secrets-store
-              kind: ClusterSecretStore
-            issuer: letsencrypt-dns01
+  - name: ciso-assistant-manifests-non-prod
+    appLabel: ciso-assistant
+    url: git@github.com:polarpoint-io/helm-library-manifests.git
+    path: .
+    targetRevision: v2.1.0
+    namespace: ciso-assistant
+    targetCluster: https://192.168.11.80:6443
+    labels:
+      service: tooling
+    values: |
+      global:
+        secretStore:
+          name: cluster-secrets-store
+          kind: ClusterSecretStore
+        issuer: letsencrypt-dns01
 
-          externalSecrets:
-            - secretName: ciso-assistant-db
-              namespace: ciso-assistant
-              refreshInterval: 5m
-              data:
-                - secretKey: postgres-password
-                  remoteRef: {key: ciso-assistant, property: db-password}
-                # bitnami's postgres chart reads `password`; the app reads
-                # `postgres-password`. Same value under two keys, deliberately.
-                - secretKey: password
-                  remoteRef: {key: ciso-assistant, property: db-password}
+      externalSecrets:
+        - secretName: ciso-assistant-db
+          namespace: ciso-assistant
+          refreshInterval: 5m
+          data:
+            - secretKey: postgres-password
+              remoteRef: {key: ciso-assistant, property: db-password}
+            # bitnami's postgres chart reads `password`; the app reads
+            # `postgres-password`. Same value under two keys, deliberately.
+            - secretKey: password
+              remoteRef: {key: ciso-assistant, property: db-password}
 
-            - secretName: ciso-assistant-django
-              namespace: ciso-assistant
-              refreshInterval: 5m
-              data:
-                - secretKey: django-secret-key
-                  remoteRef: {key: ciso-assistant, property: django-secret-key}
+        - secretName: ciso-assistant-django
+          namespace: ciso-assistant
+          refreshInterval: 5m
+          data:
+            - secretKey: django-secret-key
+              remoteRef: {key: ciso-assistant, property: django-secret-key}
 
-          certificates:
-            - name: grc-tls
-              namespace: ciso-assistant
-              host: grc.polarpoint.io
+      certificates:
+        - name: grc-tls
+          namespace: ciso-assistant
+          host: grc.polarpoint.io
 
-          tlsProxies:
-            - name: grc
-              namespace: ciso-assistant
-              host: grc.polarpoint.io
-              certSecret: grc-tls
-              # This app's Set-Cookie/session headers overflow nginx's default
-              # buffers, which surfaced as a 502 on /login rather than anything
-              # pointing at buffers.
-              largeHeaders: true
-              # Mirrors upstream's own Caddy routing: /api/* to the backend,
-              # everything else to the frontend.
-              routes:
-                - {path: "/api/", upstream: "http://ciso-assistant-backend:80"}
-                - {path: "/", upstream: "http://ciso-assistant-frontend:80", websocket: true}
-      - name: ciso-assistant-postgres-non-prod
-        appLabel: ciso-assistant
-        url: git@github.com:polarpoint-io/argocd-applications.git
-        path: security/ciso-assistant-postgres/non-prod
-        namespace: ciso-assistant
-        targetCluster: https://192.168.11.80:6443
-        labels:
-          service: tooling
-      - name: ciso-assistant-non-prod
-        appLabel: ciso-assistant
-        url: ghcr.io/intuitem/helm-charts/ce
-        chart: ciso-assistant
-        targetRevision: 0.11.5
-        namespace: ciso-assistant
-        targetCluster: https://192.168.11.80:6443
-        labels:
-          service: tooling
-        annotations:
-          kargo.akuity.io/authorized-stage: ciso-assistant-promotion:non-prod
-        values: |
-          fullnameOverride: ciso-assistant
+      tlsProxies:
+        - name: grc
+          namespace: ciso-assistant
+          host: grc.polarpoint.io
+          certSecret: grc-tls
+          # This app's Set-Cookie/session headers overflow nginx's default
+          # buffers, which surfaced as a 502 on /login rather than anything
+          # pointing at buffers.
+          largeHeaders: true
+          # Mirrors upstream's own Caddy routing: /api/* to the backend,
+          # everything else to the frontend.
+          routes:
+            - {path: "/api/", upstream: "http://ciso-assistant-backend:80"}
+            - {path: "/", upstream: "http://ciso-assistant-frontend:80", websocket: true}
+  - name: ciso-assistant-postgres-non-prod
+    appLabel: ciso-assistant
+    url: git@github.com:polarpoint-io/argocd-applications.git
+    path: security/ciso-assistant-postgres/non-prod
+    namespace: ciso-assistant
+    targetCluster: https://192.168.11.80:6443
+    labels:
+      service: tooling
+  - name: ciso-assistant-non-prod
+    appLabel: ciso-assistant
+    url: ghcr.io/intuitem/helm-charts/ce
+    chart: ciso-assistant
+    targetRevision: 0.11.5
+    namespace: ciso-assistant
+    targetCluster: https://192.168.11.80:6443
+    labels:
+      service: tooling
+    annotations:
+      kargo.akuity.io/authorized-stage: ciso-assistant-promotion:non-prod
+    values: |
+      fullnameOverride: ciso-assistant
 
-          global:
-            domain: grc.polarpoint.io
-            tls: true
+      global:
+        domain: grc.polarpoint.io
+        tls: true
 
-          backend:
-            config:
-              emailAdmin: surj@polarpoint.io
-              databaseType: externalPgsql
-              djangoExistingSecretKey: ciso-assistant-django
+      backend:
+        config:
+          emailAdmin: surj@polarpoint.io
+          databaseType: externalPgsql
+          djangoExistingSecretKey: ciso-assistant-django
 
-          externalPgsql:
-            host: ciso-assistant-postgres
-            user: ciso-assistant
-            database: ciso-assistant
-            existingSecret: ciso-assistant-db
+      externalPgsql:
+        host: ciso-assistant-postgres
+        user: ciso-assistant
+        database: ciso-assistant
+        existingSecret: ciso-assistant-db
 
-          # No Ingress in this org - exposed via ciso-assistant-manifests' nginx TLS proxy + tailscale.
-          ingress:
-            enabled: false
-      - name: platform-agent-stack-non-prod-multitenant
-        appLabel: platform-agent-stack
-        env: non-prod-multitenant
-        url: git@github.com:polarpoint-io/platform-agent-stack.git
-        path: charts/platform-agent-stack
-        namespace: agents
-        targetCluster: https://192.168.11.63:6443
-        labels:
-          service: tooling
-        ignoreDifferences:
-        - kind: Service
-          name: mongo-egress
-          jsonPointers:
-          - /spec/externalName
-        values: |
-          itsmProvider: freshservice
-          llmProvider: anthropic
+      # No Ingress in this org - exposed via ciso-assistant-manifests' nginx TLS proxy + tailscale.
+      ingress:
+        enabled: false
+  - name: platform-agent-stack-non-prod-multitenant
+    appLabel: platform-agent-stack
+    env: non-prod-multitenant
+    url: git@github.com:polarpoint-io/platform-agent-stack.git
+    path: charts/platform-agent-stack
+    namespace: agents
+    targetCluster: https://192.168.11.63:6443
+    labels:
+      service: tooling
+    ignoreDifferences:
+    - kind: Service
+      name: mongo-egress
+      jsonPointers:
+      - /spec/externalName
+    values: |
+      itsmProvider: freshservice
+      llmProvider: anthropic
 
-          # image.repository/tag intentionally not overridden here - the chart's
-          # own values.yaml points at ghcr.io/polarpoint-io/platform-agent-bridge,
-          # built by this repo's own CI. Bump the chart default, not here, when
-          # a new image is published.
+      # image.repository/tag intentionally not overridden here - the chart's
+      # own values.yaml points at ghcr.io/polarpoint-io/platform-agent-bridge,
+      # built by this repo's own CI. Bump the chart default, not here, when
+      # a new image is published.
 
-          externalSecrets:
-            enabled: true
-            secretStoreRef:
-              name: cluster-secrets-store
-              kind: ClusterSecretStore
+      externalSecrets:
+        enabled: true
+        secretStoreRef:
+          name: cluster-secrets-store
+          kind: ClusterSecretStore
 
-          # Durable state for the tier-3 approval queue and the /triage job queue.
-          # Without this both are in-memory: a pod restart drops parked approvals and
-          # queued work, and /status reports durableState:false.
-          #
-          # Reads mongostate-crossplane's connection secret off the CONTROLLER cluster
-          # (Crossplane only runs there) via a ClusterSecretStore this chart creates,
-          # authenticating as controller's tooling-mongostate-reader ServiceAccount.
-          # The token for it is seeded by hand into agents/controller-mongostate-reader-token
-          # on this cluster - it is the one credential here that comes from another
-          # cluster's kubectl rather than a SaaS provider.
-          mongoState:
-            enabled: true
-            # The address inside the connection secret only resolves on controller, so
-            # the chart creates a tailnet egress Service and points the driver there.
-            # Paired with the tailscale.com/expose Service in mongostate-crossplane.
-            tailnetFqdn: agent-swarm-state.taildb4160.ts.net
-            controllerApiServer: "https://192.168.11.70:6443"
-            controllerCaBundle: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJlVENDQVIrZ0F3SUJBZ0lCQURBS0JnZ3Foa2pPUFFRREFqQWtNU0l3SUFZRFZRUUREQmx5YTJVeUxYTmwKY25abGNpMWpZVUF4TnpneE1Ea3pNVFV5TUI0WERUSTJNRFl4TURFeU1EVTFNbG9YRFRNMk1EWXdOekV5TURVMQpNbG93SkRFaU1DQUdBMVVFQXd3WmNtdGxNaTF6WlhKMlpYSXRZMkZBTVRjNE1UQTVNekUxTWpCWk1CTUdCeXFHClNNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJDY3BKN0tQS1BYQTloWExwNHdaSW9uL05TYmNuT2ZEZDkyRUgxbmYKUG1mR0JRRXBIWExVMUJQMDNwODI5RjRJQTU5b0NVWEEvcmhGTHYwL29vWEtUTStqUWpCQU1BNEdBMVVkRHdFQgovd1FFQXdJQ3BEQVBCZ05WSFJNQkFmOEVCVEFEQVFIL01CMEdBMVVkRGdRV0JCUzdINDBCZ1RCNWx0QlQ0OUs4Cnkramd4ZnI3dWpBS0JnZ3Foa2pPUFFRREFnTklBREJGQWlBOVhSeUJZcEhJdzZxUGNxRkZMd3ZGdldoRDRmT0IKaFkrcFlnVjh3ekFuQ2dJaEFJL2E1OHpPMFJGVmZaQ3JSMkhMSWRTeUM2K0ZuaW5ndUoyL2p0Mi82dndVCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
-            tokenSecretName: controller-mongostate-reader-token
-            remoteSecretName: agent-swarm-state
-            # `agents`, not crossplane-system - see the chart's values.yaml.
-            remoteSecretNamespace: agents
-      - name: postiz-manifests-non-prod
-        appLabel: postiz
-        url: git@github.com:polarpoint-io/helm-library-manifests.git
-        path: .
-        targetRevision: v2.1.0
-        namespace: postiz
-        targetCluster: https://192.168.11.80:6443
-        labels:
-          service: tooling
-        values: |
-          global:
-            secretStore: {name: cluster-secrets-store, kind: ClusterSecretStore}
-            issuer: letsencrypt-dns01
+      # Durable state for the tier-3 approval queue and the /triage job queue.
+      # Without this both are in-memory: a pod restart drops parked approvals and
+      # queued work, and /status reports durableState:false.
+      #
+      # Reads mongostate-crossplane's connection secret off the CONTROLLER cluster
+      # (Crossplane only runs there) via a ClusterSecretStore this chart creates,
+      # authenticating as controller's tooling-mongostate-reader ServiceAccount.
+      # The token for it is seeded by hand into agents/controller-mongostate-reader-token
+      # on this cluster - it is the one credential here that comes from another
+      # cluster's kubectl rather than a SaaS provider.
+      mongoState:
+        enabled: true
+        # The address inside the connection secret only resolves on controller, so
+        # the chart creates a tailnet egress Service and points the driver there.
+        # Paired with the tailscale.com/expose Service in mongostate-crossplane.
+        tailnetFqdn: agent-swarm-state.taildb4160.ts.net
+        controllerApiServer: "https://192.168.11.70:6443"
+        controllerCaBundle: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJlVENDQVIrZ0F3SUJBZ0lCQURBS0JnZ3Foa2pPUFFRREFqQWtNU0l3SUFZRFZRUUREQmx5YTJVeUxYTmwKY25abGNpMWpZVUF4TnpneE1Ea3pNVFV5TUI0WERUSTJNRFl4TURFeU1EVTFNbG9YRFRNMk1EWXdOekV5TURVMQpNbG93SkRFaU1DQUdBMVVFQXd3WmNtdGxNaTF6WlhKMlpYSXRZMkZBTVRjNE1UQTVNekUxTWpCWk1CTUdCeXFHClNNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJDY3BKN0tQS1BYQTloWExwNHdaSW9uL05TYmNuT2ZEZDkyRUgxbmYKUG1mR0JRRXBIWExVMUJQMDNwODI5RjRJQTU5b0NVWEEvcmhGTHYwL29vWEtUTStqUWpCQU1BNEdBMVVkRHdFQgovd1FFQXdJQ3BEQVBCZ05WSFJNQkFmOEVCVEFEQVFIL01CMEdBMVVkRGdRV0JCUzdINDBCZ1RCNWx0QlQ0OUs4Cnkramd4ZnI3dWpBS0JnZ3Foa2pPUFFRREFnTklBREJGQWlBOVhSeUJZcEhJdzZxUGNxRkZMd3ZGdldoRDRmT0IKaFkrcFlnVjh3ekFuQ2dJaEFJL2E1OHpPMFJGVmZaQ3JSMkhMSWRTeUM2K0ZuaW5ndUoyL2p0Mi82dndVCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+        tokenSecretName: controller-mongostate-reader-token
+        remoteSecretName: agent-swarm-state
+        # `agents`, not crossplane-system - see the chart's values.yaml.
+        remoteSecretNamespace: agents
+  - name: postiz-manifests-non-prod
+    appLabel: postiz
+    url: git@github.com:polarpoint-io/helm-library-manifests.git
+    path: .
+    targetRevision: v2.1.0
+    namespace: postiz
+    targetCluster: https://192.168.11.80:6443
+    labels:
+      service: tooling
+    values: |
+      global:
+        secretStore: {name: cluster-secrets-store, kind: ClusterSecretStore}
+        issuer: letsencrypt-dns01
 
-          externalSecrets:
-            - secretName: postiz-db
-              namespace: postiz
-              refreshInterval: 5m
-              data:
-                - {secretKey: postgres-password, remoteRef: {key: postiz, property: db-password}}
-                - {secretKey: password, remoteRef: {key: postiz, property: db-password}}
-            - secretName: postiz-secrets
-              namespace: postiz
-              refreshInterval: 5m
-              data:
-                - {secretKey: JWT_SECRET, remoteRef: {key: postiz, property: jwt-secret}}
-                - {secretKey: DATABASE_URL, remoteRef: {key: postiz, property: database-url}}
-                - {secretKey: REDIS_URL, remoteRef: {key: postiz, property: redis-url}}
-                - {secretKey: LINKEDIN_CLIENT_ID, remoteRef: {key: postiz, property: linkedin-client-id}}
-                - {secretKey: LINKEDIN_CLIENT_SECRET, remoteRef: {key: postiz, property: linkedin-client-secret}}
-                - {secretKey: YOUTUBE_CLIENT_ID, remoteRef: {key: postiz, property: youtube-client-id}}
-                - {secretKey: YOUTUBE_CLIENT_SECRET, remoteRef: {key: postiz, property: youtube-client-secret}}
+      externalSecrets:
+        - secretName: postiz-db
+          namespace: postiz
+          refreshInterval: 5m
+          data:
+            - {secretKey: postgres-password, remoteRef: {key: postiz, property: db-password}}
+            - {secretKey: password, remoteRef: {key: postiz, property: db-password}}
+        - secretName: postiz-secrets
+          namespace: postiz
+          refreshInterval: 5m
+          data:
+            - {secretKey: JWT_SECRET, remoteRef: {key: postiz, property: jwt-secret}}
+            - {secretKey: DATABASE_URL, remoteRef: {key: postiz, property: database-url}}
+            - {secretKey: REDIS_URL, remoteRef: {key: postiz, property: redis-url}}
+            - {secretKey: LINKEDIN_CLIENT_ID, remoteRef: {key: postiz, property: linkedin-client-id}}
+            - {secretKey: LINKEDIN_CLIENT_SECRET, remoteRef: {key: postiz, property: linkedin-client-secret}}
+            - {secretKey: YOUTUBE_CLIENT_ID, remoteRef: {key: postiz, property: youtube-client-id}}
+            - {secretKey: YOUTUBE_CLIENT_SECRET, remoteRef: {key: postiz, property: youtube-client-secret}}
 
-          certificates:
-            - name: postiz-tls
-              namespace: postiz
-              host: schedule.polarpoint.io
+      certificates:
+        - name: postiz-tls
+          namespace: postiz
+          host: schedule.polarpoint.io
 
-          tlsProxies:
-            - name: schedule
-              namespace: postiz
-              host: schedule.polarpoint.io
-              certSecret: postiz-tls
-              maxBodySize: "100m"
-              routes:
-                - {path: "/", upstream: "http://postiz:80", websocket: true, forwardedHost: false}
-      - name: postiz-non-prod
-        appLabel: postiz
-        url: git@github.com:polarpoint-io/argocd-applications.git
-        path: platform-engineering/postiz/non-prod
-        namespace: postiz
-        targetCluster: https://192.168.11.80:6443
-        labels:
-          service: tooling
-        values: |
-          fullnameOverride: postiz
+      tlsProxies:
+        - name: schedule
+          namespace: postiz
+          host: schedule.polarpoint.io
+          certSecret: postiz-tls
+          maxBodySize: "100m"
+          routes:
+            - {path: "/", upstream: "http://postiz:80", websocket: true, forwardedHost: false}
+  - name: postiz-non-prod
+    appLabel: postiz
+    url: git@github.com:polarpoint-io/argocd-applications.git
+    path: platform-engineering/postiz/non-prod
+    namespace: postiz
+    targetCluster: https://192.168.11.80:6443
+    labels:
+      service: tooling
+    values: |
+      fullnameOverride: postiz
 
-          image:
-            repository: ghcr.io/gitroomhq/postiz-app
-            tag: "latest"
+      image:
+        repository: ghcr.io/gitroomhq/postiz-app
+        tag: "latest"
 
-          env:
-            MAIN_URL: "https://schedule.polarpoint.io"
-            FRONTEND_URL: "https://schedule.polarpoint.io"
-            NEXT_PUBLIC_BACKEND_URL: "https://schedule.polarpoint.io/api"
-            BACKEND_INTERNAL_URL: "http://localhost:3000"
-            NX_ADD_PLUGINS: "false"
-            IS_GENERAL: "true"
-            TEMPORAL_WORKER_URL: "temporal-non-prod-frontend:7233"
-            TEMPORAL_ADDRESS: "temporal-non-prod-frontend:7233"
+      env:
+        MAIN_URL: "https://schedule.polarpoint.io"
+        FRONTEND_URL: "https://schedule.polarpoint.io"
+        NEXT_PUBLIC_BACKEND_URL: "https://schedule.polarpoint.io/api"
+        BACKEND_INTERNAL_URL: "http://localhost:3000"
+        NX_ADD_PLUGINS: "false"
+        IS_GENERAL: "true"
+        TEMPORAL_WORKER_URL: "temporal-non-prod-frontend:7233"
+        TEMPORAL_ADDRESS: "temporal-non-prod-frontend:7233"
 
-          secrets: {}   # secret object removed from chart; ESO provides postiz-secrets
+      secrets: {}   # secret object removed from chart; ESO provides postiz-secrets
 
-          global:
-            security:
-              allowInsecureImages: true
+      global:
+        security:
+          allowInsecureImages: true
 
-          postgresql:
-            enabled: true
-            fullnameOverride: postiz-postgresql
-            image:
-              repository: bitnamilegacy/postgresql
-            auth:
-              username: postiz
-              database: postiz
-              existingSecret: postiz-db
-            primary:
-              persistence:
-                size: 8Gi
+      postgresql:
+        enabled: true
+        fullnameOverride: postiz-postgresql
+        image:
+          repository: bitnamilegacy/postgresql
+        auth:
+          username: postiz
+          database: postiz
+          existingSecret: postiz-db
+        primary:
+          persistence:
+            size: 8Gi
 
-          redis:
-            enabled: true
-            fullnameOverride: postiz-redis
-            image:
-              repository: bitnamilegacy/redis
-            auth:
-              enabled: false
-            architecture: standalone
-      - name: temporal-non-prod
-        appLabel: temporal
-        url: https://go.temporal.io/helm-charts/
-        chart: temporal
-        targetRevision: 1.6.0
-        namespace: postiz
-        targetCluster: https://192.168.11.80:6443
-        labels:
-          service: tooling
-        values: |
-          nameOverride: temporal
+      redis:
+        enabled: true
+        fullnameOverride: postiz-redis
+        image:
+          repository: bitnamilegacy/redis
+        auth:
+          enabled: false
+        architecture: standalone
+  - name: temporal-non-prod
+    appLabel: temporal
+    url: https://go.temporal.io/helm-charts/
+    chart: temporal
+    targetRevision: 1.6.0
+    namespace: postiz
+    targetCluster: https://192.168.11.80:6443
+    labels:
+      service: tooling
+    values: |
+      nameOverride: temporal
 
-          server:
-            config:
-              persistence:
-                defaultStore: default
-                visibilityStore: visibility
-                numHistoryShards: 4
-                datastores:
-                  default:
-                    sql:
-                      createDatabase: true
-                      manageSchema: true
-                      pluginName: postgres12_pgx
-                      driverName: postgres12_pgx
-                      databaseName: temporal
-                      connectAddr: "postiz-postgresql:5432"
-                      connectProtocol: tcp
-                      user: postgres
-                      existingSecret: postiz-db
-                      secretKey: postgres-password
-                  visibility:
-                    sql:
-                      createDatabase: true
-                      manageSchema: true
-                      pluginName: postgres12_pgx
-                      driverName: postgres12_pgx
-                      databaseName: temporal_visibility
-                      connectAddr: "postiz-postgresql:5432"
-                      connectProtocol: tcp
-                      user: postgres
-                      existingSecret: postiz-db
-                      secretKey: postgres-password
+      server:
+        config:
+          persistence:
+            defaultStore: default
+            visibilityStore: visibility
+            numHistoryShards: 4
+            datastores:
+              default:
+                sql:
+                  createDatabase: true
+                  manageSchema: true
+                  pluginName: postgres12_pgx
+                  driverName: postgres12_pgx
+                  databaseName: temporal
+                  connectAddr: "postiz-postgresql:5432"
+                  connectProtocol: tcp
+                  user: postgres
+                  existingSecret: postiz-db
+                  secretKey: postgres-password
+              visibility:
+                sql:
+                  createDatabase: true
+                  manageSchema: true
+                  pluginName: postgres12_pgx
+                  driverName: postgres12_pgx
+                  databaseName: temporal_visibility
+                  connectAddr: "postiz-postgresql:5432"
+                  connectProtocol: tcp
+                  user: postgres
+                  existingSecret: postiz-db
+                  secretKey: postgres-password
 
-          web:
-            enabled: false   # no public UI needed; enable later if wanted
-      - name: toolhive-operator-crds-non-prod
-        appLabel: toolhive
-        url: ghcr.io/stacklok/toolhive
-        chart: toolhive-operator-crds
-        targetRevision: 0.41.0
-        namespace: toolhive-system
-        targetCluster: https://192.168.11.80:6443
-        labels:
-          service: tooling
-      - name: toolhive-operator-non-prod
-        appLabel: toolhive
-        url: ghcr.io/stacklok/toolhive
-        chart: toolhive-operator
-        targetRevision: 0.41.0
-        namespace: toolhive-system
-        targetCluster: https://192.168.11.80:6443
-        labels:
-          service: tooling
-        values: |
-          operator:
-            replicaCount: 1
-      - name: toolhive-registry-manifests-non-prod
-        appLabel: toolhive-registry
-        url: git@github.com:polarpoint-io/argocd-applications.git
-        path: platform-engineering/toolhive-registry-manifests/non-prod
-        namespace: toolhive-system
-        targetCluster: https://192.168.11.80:6443
-        labels:
-          service: tooling
-      - name: postgresql-non-prod
-        appLabel: toolhive-registry
-        url: https://charts.bitnami.com/bitnami
-        chart: postgresql
-        targetRevision: 15.5.28
-        namespace: toolhive-system
-        targetCluster: https://192.168.11.80:6443
-        labels:
-          service: tooling
-        values: |
-          fullnameOverride: toolhive-registry-postgres
-          image:
-            repository: bitnamilegacy/postgresql
-          auth:
-            username: thv_user
-            database: toolhive_registry
-            existingSecret: toolhive-registry-db
-          primary:
-            persistence:
-              size: 4Gi
-            initdb:
-              scripts:
-                # thv_user owns the DB but that alone doesn't grant CREATEROLE, which
-                # the registry server's first migration needs (it CREATE ROLE's an
-                # internal 'toolhive_registry_server' grants-holder role). Without
-                # this, migration #1 fails with "permission denied to create role"
-                # every time, on a totally fresh DB - discovered 2026-08-03.
-                grant-createrole.sql: |
-                  ALTER ROLE thv_user CREATEROLE;
-      - name: toolhive-registry-server-non-prod
-        appLabel: toolhive-registry
-        url: ghcr.io/stacklok
-        chart: toolhive-registry-server
-        targetRevision: 1.5.0
-        namespace: toolhive-system
-        targetCluster: https://192.168.11.80:6443
-        labels:
-          service: tooling
-        values: |
-          fullnameOverride: toolhive-registry
+      web:
+        enabled: false   # no public UI needed; enable later if wanted
+  - name: toolhive-operator-crds-non-prod
+    appLabel: toolhive
+    url: ghcr.io/stacklok/toolhive
+    chart: toolhive-operator-crds
+    targetRevision: 0.41.0
+    namespace: toolhive-system
+    targetCluster: https://192.168.11.80:6443
+    labels:
+      service: tooling
+  - name: toolhive-operator-non-prod
+    appLabel: toolhive
+    url: ghcr.io/stacklok/toolhive
+    chart: toolhive-operator
+    targetRevision: 0.41.0
+    namespace: toolhive-system
+    targetCluster: https://192.168.11.80:6443
+    labels:
+      service: tooling
+    values: |
+      operator:
+        replicaCount: 1
+  - name: toolhive-registry-manifests-non-prod
+    appLabel: toolhive-registry
+    url: git@github.com:polarpoint-io/helm-library-manifests.git
+    path: .
+    namespace: toolhive-system
+    targetCluster: https://192.168.11.80:6443
+    labels:
+      service: tooling
+    targetRevision: v2.1.0
+    values: |
+      certificates:
+        - name: mcp-tls
+          namespace: toolhive-system
+          host: mcp.polarpoint.io
+      externalSecrets:
+        - secretName: toolhive-registry-db
+          namespace: toolhive-system
+          refreshInterval: 5m
+          data:
+            - {secretKey: postgres-password, remoteRef: {key: toolhive-registry, property: db-password}}
+            - {secretKey: password, remoteRef: {key: toolhive-registry, property: db-password}}
+      tlsProxies:
+        - name: mcp
+          namespace: toolhive-system
+          host: mcp.polarpoint.io
+          certSecret: mcp-tls
+          maxBodySize: 100m
+          routes:
+            - {path: "/", upstream: "http://toolhive-registry:8080", websocket: true, forwardedHost: false}
+  - name: postgresql-non-prod
+    appLabel: toolhive-registry
+    url: https://charts.bitnami.com/bitnami
+    chart: postgresql
+    targetRevision: 15.5.28
+    namespace: toolhive-system
+    targetCluster: https://192.168.11.80:6443
+    labels:
+      service: tooling
+    values: |
+      fullnameOverride: toolhive-registry-postgres
+      image:
+        repository: bitnamilegacy/postgresql
+      auth:
+        username: thv_user
+        database: toolhive_registry
+        existingSecret: toolhive-registry-db
+      primary:
+        persistence:
+          size: 4Gi
+        initdb:
+          scripts:
+            # thv_user owns the DB but that alone doesn't grant CREATEROLE, which
+            # the registry server's first migration needs (it CREATE ROLE's an
+            # internal 'toolhive_registry_server' grants-holder role). Without
+            # this, migration #1 fails with "permission denied to create role"
+            # every time, on a totally fresh DB - discovered 2026-08-03.
+            grant-createrole.sql: |
+              ALTER ROLE thv_user CREATEROLE;
+  - name: toolhive-registry-server-non-prod
+    appLabel: toolhive-registry
+    url: ghcr.io/stacklok
+    chart: toolhive-registry-server
+    targetRevision: 1.5.0
+    namespace: toolhive-system
+    targetCluster: https://192.168.11.80:6443
+    labels:
+      service: tooling
+    values: |
+      fullnameOverride: toolhive-registry
 
+      config:
+        sources:
+          - name: toolhive
+            git:
+              repository: https://github.com/stacklok/toolhive-catalog.git
+              branch: main
+              path: pkg/catalog/toolhive/data/registry-upstream.json
+            syncPolicy:
+              interval: "30m"
+        registries:
+          - name: default
+            sources: ["toolhive"]
+        auth:
+          mode: anonymous
+        database:
+          host: toolhive-registry-postgres
+          port: 5432
+          user: thv_user
+          database: toolhive_registry
+          sslMode: disable   # cluster-internal only; bitnami postgresql has no TLS listener configured
+
+      extraEnv:
+        - name: THV_REGISTRY_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: toolhive-registry-db
+              key: password
+
+      # Plain ClusterIP, internal only - see toolhive-registry-manifests for the
+      # TLS proxy + tailscale expose (registry server itself speaks HTTP only).
+      service:
+        type: ClusterIP
+        port: 8080
+  - name: holmesgpt-runbook-mcp-non-prod-multitenant
+    appLabel: holmesgpt-runbook-mcp
+    env: non-prod-multitenant
+    url: git@github.com:polarpoint-io/argocd-applications.git
+    path: platform-engineering/holmesgpt-runbook-mcp/non-prod
+    namespace: holmesgpt
+    targetCluster: https://192.168.11.63:6443
+    labels:
+      service: platform
+  - name: holmes-non-prod-multitenant
+    appLabel: holmesgpt
+    env: non-prod-multitenant
+    url: https://robusta-charts.storage.googleapis.com
+    chart: holmes
+    targetRevision: 0.38.1
+    namespace: holmesgpt
+    targetCluster: https://192.168.11.63:6443
+    labels:
+      service: platform
+    values: |
+      # HolmesGPT / CNCF SRE Agent - standalone Robusta 'holmes' chart (not the
+      # full robusta umbrella chart, which pulls in Slack/alerting we don't need).
+      # Pure HTTP API, no built-in web UI - use the CLI/TUI or hit the API
+      # directly from inside the cluster:
+      # http://holmes-non-prod-multitenant-holmes.holmesgpt.svc:80
+      #
+      # LLM key is NOT stored here. It's seeded imperatively as a k8s Secret
+      # (holmes-llm-keys, key ANTHROPIC_API_KEY) directly on the multitenant
+      # cluster in the holmesgpt namespace - not tracked in git:
+      #   kubectl create secret generic holmes-llm-keys \
+      #     --from-literal=ANTHROPIC_API_KEY=<key> -n holmesgpt
+      extraEnvVarsSecrets:
+        - holmes-llm-keys
+
+      modelList:
+        claude-sonnet-5:
+          model: anthropic/claude-sonnet-5
+          api_key: envRef:ANTHROPIC_API_KEY
+
+      # holmesgpt-runbook-mcp (github.com/polarpoint-io/holmesgpt-runbook-mcp) -
+      # deployed alongside Holmes in the same namespace, see the
+      # holmesgpt-runbook-mcp Application. Adds runbook_search, runbook_get,
+      # investigation_classify, runbook_draft and root_cause_analyse - all
+      # gated by platform-agent-stack's risk-tiers.yaml where that's deployed.
+      mcp_servers:
+        runbook_mcp:
+          description: "Runbook search, gap detection, drafting, and root cause analysis via Confluence"
           config:
-            sources:
-              - name: toolhive
-                git:
-                  repository: https://github.com/stacklok/toolhive-catalog.git
-                  branch: main
-                  path: pkg/catalog/toolhive/data/registry-upstream.json
-                syncPolicy:
-                  interval: "30m"
-            registries:
-              - name: default
-                sources: ["toolhive"]
-            auth:
-              mode: anonymous
-            database:
-              host: toolhive-registry-postgres
-              port: 5432
-              user: thv_user
-              database: toolhive_registry
-              sslMode: disable   # cluster-internal only; bitnami postgresql has no TLS listener configured
+            url: "http://holmesgpt-runbook-mcp.holmesgpt.svc.cluster.local:8080/mcp"
+            mode: streamable-http
 
-          extraEnv:
-            - name: THV_REGISTRY_DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: toolhive-registry-db
-                  key: password
-
-          # Plain ClusterIP, internal only - see toolhive-registry-manifests for the
-          # TLS proxy + tailscale expose (registry server itself speaks HTTP only).
-          service:
-            type: ClusterIP
-            port: 8080
-      - name: holmesgpt-runbook-mcp-non-prod-multitenant
-        appLabel: holmesgpt-runbook-mcp
-        env: non-prod-multitenant
-        url: git@github.com:polarpoint-io/argocd-applications.git
-        path: platform-engineering/holmesgpt-runbook-mcp/non-prod
-        namespace: holmesgpt
-        targetCluster: https://192.168.11.63:6443
-        labels:
-          service: platform
-      - name: holmes-non-prod-multitenant
-        appLabel: holmesgpt
-        env: non-prod-multitenant
-        url: https://robusta-charts.storage.googleapis.com
-        chart: holmes
-        targetRevision: 0.38.1
-        namespace: holmesgpt
-        targetCluster: https://192.168.11.63:6443
-        labels:
-          service: platform
-        values: |
-          # HolmesGPT / CNCF SRE Agent - standalone Robusta 'holmes' chart (not the
-          # full robusta umbrella chart, which pulls in Slack/alerting we don't need).
-          # Pure HTTP API, no built-in web UI - use the CLI/TUI or hit the API
-          # directly from inside the cluster:
-          # http://holmes-non-prod-multitenant-holmes.holmesgpt.svc:80
-          #
-          # LLM key is NOT stored here. It's seeded imperatively as a k8s Secret
-          # (holmes-llm-keys, key ANTHROPIC_API_KEY) directly on the multitenant
-          # cluster in the holmesgpt namespace - not tracked in git:
-          #   kubectl create secret generic holmes-llm-keys \
-          #     --from-literal=ANTHROPIC_API_KEY=<key> -n holmesgpt
-          extraEnvVarsSecrets:
-            - holmes-llm-keys
-
-          modelList:
-            claude-sonnet-5:
-              model: anthropic/claude-sonnet-5
-              api_key: envRef:ANTHROPIC_API_KEY
-
-          # holmesgpt-runbook-mcp (github.com/polarpoint-io/holmesgpt-runbook-mcp) -
-          # deployed alongside Holmes in the same namespace, see the
-          # holmesgpt-runbook-mcp Application. Adds runbook_search, runbook_get,
-          # investigation_classify, runbook_draft and root_cause_analyse - all
-          # gated by platform-agent-stack's risk-tiers.yaml where that's deployed.
-          mcp_servers:
-            runbook_mcp:
-              description: "Runbook search, gap detection, drafting, and root cause analysis via Confluence"
-              config:
-                url: "http://holmesgpt-runbook-mcp.holmesgpt.svc.cluster.local:8080/mcp"
-                mode: streamable-http
-
-          # Default toolsets (kubernetes/core, logs, robusta, internet, prometheus,
-          # skills, connectivity_check, bash) and default k8sRBAC:false (chart's own
-          # broad read-only ClusterRole + CRD permissions for argo/flux/etc.) are
-          # left at chart defaults - appropriate for a read-only investigation agent.
+      # Default toolsets (kubernetes/core, logs, robusta, internet, prometheus,
+      # skills, connectivity_check, bash) and default k8sRBAC:false (chart's own
+      # broad read-only ClusterRole + CRD permissions for argo/flux/etc.) are
+      # left at chart defaults - appropriate for a read-only investigation agent.
