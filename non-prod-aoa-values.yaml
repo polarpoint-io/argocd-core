@@ -295,6 +295,33 @@ projects:
           - name: CLUSTER_NAME
             value: "{{short}}"
 
+  # Alloy's credentials. Separate app from the collector itself so the secret
+  # lands before the DaemonSet needs it, and so rotating a Grafana Cloud token
+  # is a sync of this alone.
+  #
+  # The five properties are what Grafana Cloud gives you: a Prometheus
+  # remote_write endpoint and its numeric instance id, the same pair for Loki,
+  # and one Access Policy token used as the password for both.
+  - name: grafana-alloy-manifests
+    appLabel: grafana-alloy
+    url: git@github.com:polarpoint-io/helm-library-manifests.git
+    path: .
+    targetRevision: v2.1.0
+    namespace: grafana-alloy
+    labels:
+      service: foundational
+    values: |
+      externalSecrets:
+        - secretName: grafana-cloud
+          namespace: grafana-alloy
+          refreshInterval: 1h
+          data:
+            - {secretKey: prometheus-url, remoteRef: {key: grafana-cloud, property: prometheus-url}}
+            - {secretKey: prometheus-username, remoteRef: {key: grafana-cloud, property: prometheus-username}}
+            - {secretKey: loki-url, remoteRef: {key: grafana-cloud, property: loki-url}}
+            - {secretKey: loki-username, remoteRef: {key: grafana-cloud, property: loki-username}}
+            - {secretKey: api-token, remoteRef: {key: grafana-cloud, property: api-token}}
+
   - name: local-path-provisioner
     url: git@github.com:polarpoint-io/argocd-applications.git
     path: foundational/common/local-path-provisioner/non-prod
