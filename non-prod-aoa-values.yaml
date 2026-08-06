@@ -202,8 +202,8 @@ projects:
     # no such limit. 2.6.0 -> 2.8.0 is additive - two new generator CRDs, nothing
     # removed - so the upgrade itself is forward-only.
     syncOptions:
-      - CreateNamespace=true
-      - ServerSideApply=true
+    - CreateNamespace=true
+    - ServerSideApply=true
     valuesPath: foundational/common/external-secrets/non-prod/values.yaml
 
   # ---- security -----------------------------------------------------------
@@ -391,91 +391,6 @@ projects:
     server: https://kubernetes.default.svc
   applications:
 
-  - name: backstage-manifests-non-prod
-    appLabel: backstage
-    url: git@github.com:polarpoint-io/helm-library-manifests.git
-    path: .
-    namespace: platform
-    labels:
-      service: platform
-    targetRevision: v2.1.0
-    values: |
-      certificates:
-        - name: platform-tls
-          namespace: platform
-          host: platform.polarpoint.io
-      externalSecrets:
-        - secretName: backstage-database-authentication
-          namespace: platform
-          refreshInterval: 5m
-          data:
-            - {secretKey: POSTGRES_USER, remoteRef: {key: backstage, property: postgres-user}}
-            - {secretKey: POSTGRES_PASSWORD, remoteRef: {key: backstage, property: postgres-password}}
-            - {secretKey: POSTGRES_PORT, remoteRef: {key: backstage, property: postgres-port}}
-        - secretName: backstage-db
-          namespace: platform
-          refreshInterval: 5m
-          data:
-            - {secretKey: postgres-password, remoteRef: {key: backstage, property: postgres-password}}
-            - {secretKey: password, remoteRef: {key: backstage, property: postgres-password}}
-            - {secretKey: user-password, remoteRef: {key: backstage, property: postgres-password}}
-            - {secretKey: admin-password, remoteRef: {key: backstage, property: postgres-password}}
-        - secretName: backstage-github-authentication
-          namespace: platform
-          refreshInterval: 5m
-          data:
-            - {secretKey: AUTH_GITHUB_CLIENT_ID, remoteRef: {key: backstage, property: github-client-id}}
-            - {secretKey: AUTH_GITHUB_CLIENT_SECRET, remoteRef: {key: backstage, property: github-client-secret}}
-            - {secretKey: GITHUB_APP_ID, remoteRef: {key: backstage, property: github-app-id}}
-            - {secretKey: GITHUB_APP_PRIVATE_KEY, remoteRef: {key: backstage, property: github-app-private-key}}
-            - {secretKey: GITHUB_APP_WEBHOOK_SECRET, remoteRef: {key: backstage, property: github-app-webhook-secret}}
-        - secretName: backstage-kubernetes-authentication
-          namespace: platform
-          refreshInterval: 5m
-          data:
-            - {secretKey: K8S_TOKEN, remoteRef: {key: backstage, property: kubernetes-tooling-token}}
-            - {secretKey: K8S_URL, remoteRef: {key: backstage, property: kubernetes-tooling-url}}
-            - {secretKey: K8S_CONTROLLER_TOKEN, remoteRef: {key: backstage, property: kubernetes-controller-token}}
-            - {secretKey: K8S_CONTROLLER_URL, remoteRef: {key: backstage, property: kubernetes-controller-url}}
-      tlsProxies:
-        - name: platform
-          namespace: platform
-          host: platform.polarpoint.io
-          certSecret: platform-tls
-          maxBodySize: 100m
-          routes:
-            - {path: "/", upstream: "http://backstage:7007", websocket: true, forwardedHost: false}
-      customResources:
-        - apiVersion: v1
-          kind: ServiceAccount
-          metadata: {name: backstage-controller-viewer, namespace: platform}
-        - apiVersion: v1
-          kind: Secret
-          metadata:
-            name: backstage-controller-viewer-token
-            namespace: platform
-            annotations: {kubernetes.io/service-account.name: backstage-controller-viewer}
-          type: kubernetes.io/service-account-token
-        - apiVersion: rbac.authorization.k8s.io/v1
-          kind: ClusterRole
-          metadata: {name: backstage-controller-viewer}
-          rules:
-            - apiGroups: ['*']
-              resources: ['*']
-              verbs: ['get', 'list', 'watch']
-            - nonResourceURLs: ['*']
-              verbs: ['get']
-        - apiVersion: rbac.authorization.k8s.io/v1
-          kind: ClusterRoleBinding
-          metadata: {name: backstage-controller-viewer}
-          roleRef:
-            apiGroup: rbac.authorization.k8s.io
-            kind: ClusterRole
-            name: backstage-controller-viewer
-          subjects:
-            - kind: ServiceAccount
-              name: backstage-controller-viewer
-              namespace: platform
   - name: backstage-non-prod
     appLabel: backstage
     url: https://backstage.github.io/charts
@@ -489,6 +404,90 @@ projects:
   # telemetry out. EXPERIMENTAL upstream; see the values file.
   # What the provider manages, kept apart from the provider install so deleting
   # the config never uninstalls the controller that applies it.
+    extraSources:
+    - url: git@github.com:polarpoint-io/helm-library-manifests.git
+      path: .
+      targetRevision: v2.2.0
+      values: |
+        global:
+          # Everything this chart renders lands before the workload.
+          syncWave: "-1"
+        certificates:
+          - name: platform-tls
+            namespace: platform
+            host: platform.polarpoint.io
+        externalSecrets:
+          - secretName: backstage-database-authentication
+            namespace: platform
+            refreshInterval: 5m
+            data:
+              - {secretKey: POSTGRES_USER, remoteRef: {key: backstage, property: postgres-user}}
+              - {secretKey: POSTGRES_PASSWORD, remoteRef: {key: backstage, property: postgres-password}}
+              - {secretKey: POSTGRES_PORT, remoteRef: {key: backstage, property: postgres-port}}
+          - secretName: backstage-db
+            namespace: platform
+            refreshInterval: 5m
+            data:
+              - {secretKey: postgres-password, remoteRef: {key: backstage, property: postgres-password}}
+              - {secretKey: password, remoteRef: {key: backstage, property: postgres-password}}
+              - {secretKey: user-password, remoteRef: {key: backstage, property: postgres-password}}
+              - {secretKey: admin-password, remoteRef: {key: backstage, property: postgres-password}}
+          - secretName: backstage-github-authentication
+            namespace: platform
+            refreshInterval: 5m
+            data:
+              - {secretKey: AUTH_GITHUB_CLIENT_ID, remoteRef: {key: backstage, property: github-client-id}}
+              - {secretKey: AUTH_GITHUB_CLIENT_SECRET, remoteRef: {key: backstage, property: github-client-secret}}
+              - {secretKey: GITHUB_APP_ID, remoteRef: {key: backstage, property: github-app-id}}
+              - {secretKey: GITHUB_APP_PRIVATE_KEY, remoteRef: {key: backstage, property: github-app-private-key}}
+              - {secretKey: GITHUB_APP_WEBHOOK_SECRET, remoteRef: {key: backstage, property: github-app-webhook-secret}}
+          - secretName: backstage-kubernetes-authentication
+            namespace: platform
+            refreshInterval: 5m
+            data:
+              - {secretKey: K8S_TOKEN, remoteRef: {key: backstage, property: kubernetes-tooling-token}}
+              - {secretKey: K8S_URL, remoteRef: {key: backstage, property: kubernetes-tooling-url}}
+              - {secretKey: K8S_CONTROLLER_TOKEN, remoteRef: {key: backstage, property: kubernetes-controller-token}}
+              - {secretKey: K8S_CONTROLLER_URL, remoteRef: {key: backstage, property: kubernetes-controller-url}}
+        tlsProxies:
+          - name: platform
+            namespace: platform
+            host: platform.polarpoint.io
+            certSecret: platform-tls
+            maxBodySize: 100m
+            routes:
+              - {path: "/", upstream: "http://backstage:7007", websocket: true, forwardedHost: false}
+        customResources:
+          - apiVersion: v1
+            kind: ServiceAccount
+            metadata: {name: backstage-controller-viewer, namespace: platform}
+          - apiVersion: v1
+            kind: Secret
+            metadata:
+              name: backstage-controller-viewer-token
+              namespace: platform
+              annotations: {kubernetes.io/service-account.name: backstage-controller-viewer}
+            type: kubernetes.io/service-account-token
+          - apiVersion: rbac.authorization.k8s.io/v1
+            kind: ClusterRole
+            metadata: {name: backstage-controller-viewer}
+            rules:
+              - apiGroups: ['*']
+                resources: ['*']
+                verbs: ['get', 'list', 'watch']
+              - nonResourceURLs: ['*']
+                verbs: ['get']
+          - apiVersion: rbac.authorization.k8s.io/v1
+            kind: ClusterRoleBinding
+            metadata: {name: backstage-controller-viewer}
+            roleRef:
+              apiGroup: rbac.authorization.k8s.io
+              kind: ClusterRole
+              name: backstage-controller-viewer
+            subjects:
+              - kind: ServiceAccount
+                name: backstage-controller-viewer
+                namespace: platform
   - name: grafana-config-non-prod
     appLabel: grafana-config
     url: git@github.com:polarpoint-io/helm-library-manifests.git
