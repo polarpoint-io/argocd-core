@@ -550,15 +550,6 @@ projects:
       service: controller
     valuesPath: platform-engineering/iac/grafana-provider/non-prod/values.yaml
 
-  - name: crossplane-manifests-non-prod
-    appLabel: crossplane-manifests
-    url: git@github.com:polarpoint-io/helm-library-manifests.git
-    path: .
-    namespace: iac
-    labels:
-      service: controller
-    targetRevision: v2.1.0
-    valuesPath: platform-engineering/iac/crossplane-manifests/non-prod/values.yaml
   - name: crossplane-non-prod
     appLabel: crossplane
     url: https://charts.crossplane.io/stable
@@ -586,26 +577,11 @@ projects:
         requests:
           cpu: 100m
           memory: 256Mi
-  - name: kargo-manifests-non-prod
-    appLabel: kargo
-    url: git@github.com:polarpoint-io/helm-library-manifests.git
-    path: .
-    namespace: kargo
-    labels:
-      service: controller
-    targetRevision: v2.1.0
-    values: |
-      certificates:
-        - name: kargo-api-tls
-          namespace: kargo
-          host: promote.polarpoint.io
-      externalSecrets:
-        - secretName: kargo-api-secret
-          namespace: kargo
-          refreshInterval: 5m
-          data:
-            - {secretKey: ADMIN_ACCOUNT_PASSWORD_HASH, remoteRef: {key: kargo, property: admin-password-hash}}
-            - {secretKey: ADMIN_ACCOUNT_TOKEN_SIGNING_KEY, remoteRef: {key: kargo, property: admin-token-signing-key}}
+    extraSources:
+    - url: git@github.com:polarpoint-io/helm-library-manifests.git
+      path: .
+      targetRevision: v2.2.0
+      valuesPath: platform-engineering/iac/crossplane-manifests/non-prod/values.yaml
   - name: kargo-projects-non-prod
     appLabel: kargo
     url: git@github.com:polarpoint-io/argocd-applications.git
@@ -638,6 +614,25 @@ projects:
         argocd:
           urls:
             "": https://deploy.polarpoint.io
+    extraSources:
+    - url: git@github.com:polarpoint-io/helm-library-manifests.git
+      path: .
+      targetRevision: v2.2.0
+      values: |
+        global:
+          # Lands before the workload that mounts it.
+          syncWave: "-1"
+        certificates:
+          - name: kargo-api-tls
+            namespace: kargo
+            host: promote.polarpoint.io
+        externalSecrets:
+          - secretName: kargo-api-secret
+            namespace: kargo
+            refreshInterval: 5m
+            data:
+              - {secretKey: ADMIN_ACCOUNT_PASSWORD_HASH, remoteRef: {key: kargo, property: admin-password-hash}}
+              - {secretKey: ADMIN_ACCOUNT_TOKEN_SIGNING_KEY, remoteRef: {key: kargo, property: admin-token-signing-key}}
   - name: mongostate-crossplane-non-prod
     appLabel: mongostate-crossplane
     url: git@github.com:polarpoint-io/mongostate-crossplane.git
@@ -695,60 +690,6 @@ projects:
     server: https://192.168.11.63:6443
   applications:
 
-  - name: ciso-assistant-manifests-non-prod
-    appLabel: ciso-assistant
-    url: git@github.com:polarpoint-io/helm-library-manifests.git
-    path: .
-    targetRevision: v2.1.0
-    namespace: ciso-assistant
-    targetCluster: https://192.168.11.80:6443
-    labels:
-      service: tooling
-    values: |
-      global:
-        secretStore:
-          name: cluster-secrets-store
-          kind: ClusterSecretStore
-        issuer: letsencrypt-dns01
-
-      externalSecrets:
-        - secretName: ciso-assistant-db
-          namespace: ciso-assistant
-          refreshInterval: 5m
-          data:
-            - secretKey: postgres-password
-              remoteRef: {key: ciso-assistant, property: db-password}
-            # bitnami's postgres chart reads `password`; the app reads
-            # `postgres-password`. Same value under two keys, deliberately.
-            - secretKey: password
-              remoteRef: {key: ciso-assistant, property: db-password}
-
-        - secretName: ciso-assistant-django
-          namespace: ciso-assistant
-          refreshInterval: 5m
-          data:
-            - secretKey: django-secret-key
-              remoteRef: {key: ciso-assistant, property: django-secret-key}
-
-      certificates:
-        - name: grc-tls
-          namespace: ciso-assistant
-          host: grc.polarpoint.io
-
-      tlsProxies:
-        - name: grc
-          namespace: ciso-assistant
-          host: grc.polarpoint.io
-          certSecret: grc-tls
-          # This app's Set-Cookie/session headers overflow nginx's default
-          # buffers, which surfaced as a 502 on /login rather than anything
-          # pointing at buffers.
-          largeHeaders: true
-          # Mirrors upstream's own Caddy routing: /api/* to the backend,
-          # everything else to the frontend.
-          routes:
-            - {path: "/api/", upstream: "http://ciso-assistant-backend:80"}
-            - {path: "/", upstream: "http://ciso-assistant-frontend:80", websocket: true}
   - name: ciso-assistant-postgres-non-prod
     appLabel: ciso-assistant
     url: git@github.com:polarpoint-io/argocd-applications.git
@@ -790,6 +731,58 @@ projects:
       # No Ingress in this org - exposed via ciso-assistant-manifests' nginx TLS proxy + tailscale.
       ingress:
         enabled: false
+    extraSources:
+    - url: git@github.com:polarpoint-io/helm-library-manifests.git
+      path: .
+      targetRevision: v2.2.0
+      values: |
+        global:
+          # Lands before the workload that mounts it.
+          syncWave: "-1"
+        global:
+          secretStore:
+            name: cluster-secrets-store
+            kind: ClusterSecretStore
+          issuer: letsencrypt-dns01
+
+        externalSecrets:
+          - secretName: ciso-assistant-db
+            namespace: ciso-assistant
+            refreshInterval: 5m
+            data:
+              - secretKey: postgres-password
+                remoteRef: {key: ciso-assistant, property: db-password}
+              # bitnami's postgres chart reads `password`; the app reads
+              # `postgres-password`. Same value under two keys, deliberately.
+              - secretKey: password
+                remoteRef: {key: ciso-assistant, property: db-password}
+
+          - secretName: ciso-assistant-django
+            namespace: ciso-assistant
+            refreshInterval: 5m
+            data:
+              - secretKey: django-secret-key
+                remoteRef: {key: ciso-assistant, property: django-secret-key}
+
+        certificates:
+          - name: grc-tls
+            namespace: ciso-assistant
+            host: grc.polarpoint.io
+
+        tlsProxies:
+          - name: grc
+            namespace: ciso-assistant
+            host: grc.polarpoint.io
+            certSecret: grc-tls
+            # This app's Set-Cookie/session headers overflow nginx's default
+            # buffers, which surfaced as a 502 on /login rather than anything
+            # pointing at buffers.
+            largeHeaders: true
+            # Mirrors upstream's own Caddy routing: /api/* to the backend,
+            # everything else to the frontend.
+            routes:
+              - {path: "/api/", upstream: "http://ciso-assistant-backend:80"}
+              - {path: "/", upstream: "http://ciso-assistant-frontend:80", websocket: true}
   - name: platform-agent-stack-non-prod-multitenant
     appLabel: platform-agent-stack
     env: non-prod-multitenant
@@ -859,52 +852,6 @@ projects:
         remoteSecretName: agent-swarm-state
         # `agents`, not crossplane-system - see the chart's values.yaml.
         remoteSecretNamespace: agents
-  - name: postiz-manifests-non-prod
-    appLabel: postiz
-    url: git@github.com:polarpoint-io/helm-library-manifests.git
-    path: .
-    targetRevision: v2.1.0
-    namespace: postiz
-    targetCluster: https://192.168.11.80:6443
-    labels:
-      service: tooling
-    values: |
-      global:
-        secretStore: {name: cluster-secrets-store, kind: ClusterSecretStore}
-        issuer: letsencrypt-dns01
-
-      externalSecrets:
-        - secretName: postiz-db
-          namespace: postiz
-          refreshInterval: 5m
-          data:
-            - {secretKey: postgres-password, remoteRef: {key: postiz, property: db-password}}
-            - {secretKey: password, remoteRef: {key: postiz, property: db-password}}
-        - secretName: postiz-secrets
-          namespace: postiz
-          refreshInterval: 5m
-          data:
-            - {secretKey: JWT_SECRET, remoteRef: {key: postiz, property: jwt-secret}}
-            - {secretKey: DATABASE_URL, remoteRef: {key: postiz, property: database-url}}
-            - {secretKey: REDIS_URL, remoteRef: {key: postiz, property: redis-url}}
-            - {secretKey: LINKEDIN_CLIENT_ID, remoteRef: {key: postiz, property: linkedin-client-id}}
-            - {secretKey: LINKEDIN_CLIENT_SECRET, remoteRef: {key: postiz, property: linkedin-client-secret}}
-            - {secretKey: YOUTUBE_CLIENT_ID, remoteRef: {key: postiz, property: youtube-client-id}}
-            - {secretKey: YOUTUBE_CLIENT_SECRET, remoteRef: {key: postiz, property: youtube-client-secret}}
-
-      certificates:
-        - name: postiz-tls
-          namespace: postiz
-          host: schedule.polarpoint.io
-
-      tlsProxies:
-        - name: schedule
-          namespace: postiz
-          host: schedule.polarpoint.io
-          certSecret: postiz-tls
-          maxBodySize: "100m"
-          routes:
-            - {path: "/", upstream: "http://postiz:80", websocket: true, forwardedHost: false}
   - name: postiz-non-prod
     appLabel: postiz
     url: git@github.com:polarpoint-io/argocd-applications.git
@@ -957,6 +904,50 @@ projects:
         auth:
           enabled: false
         architecture: standalone
+    extraSources:
+    - url: git@github.com:polarpoint-io/helm-library-manifests.git
+      path: .
+      targetRevision: v2.2.0
+      values: |
+        global:
+          # Lands before the workload that mounts it.
+          syncWave: "-1"
+        global:
+          secretStore: {name: cluster-secrets-store, kind: ClusterSecretStore}
+          issuer: letsencrypt-dns01
+
+        externalSecrets:
+          - secretName: postiz-db
+            namespace: postiz
+            refreshInterval: 5m
+            data:
+              - {secretKey: postgres-password, remoteRef: {key: postiz, property: db-password}}
+              - {secretKey: password, remoteRef: {key: postiz, property: db-password}}
+          - secretName: postiz-secrets
+            namespace: postiz
+            refreshInterval: 5m
+            data:
+              - {secretKey: JWT_SECRET, remoteRef: {key: postiz, property: jwt-secret}}
+              - {secretKey: DATABASE_URL, remoteRef: {key: postiz, property: database-url}}
+              - {secretKey: REDIS_URL, remoteRef: {key: postiz, property: redis-url}}
+              - {secretKey: LINKEDIN_CLIENT_ID, remoteRef: {key: postiz, property: linkedin-client-id}}
+              - {secretKey: LINKEDIN_CLIENT_SECRET, remoteRef: {key: postiz, property: linkedin-client-secret}}
+              - {secretKey: YOUTUBE_CLIENT_ID, remoteRef: {key: postiz, property: youtube-client-id}}
+              - {secretKey: YOUTUBE_CLIENT_SECRET, remoteRef: {key: postiz, property: youtube-client-secret}}
+
+        certificates:
+          - name: postiz-tls
+            namespace: postiz
+            host: schedule.polarpoint.io
+
+        tlsProxies:
+          - name: schedule
+            namespace: postiz
+            host: schedule.polarpoint.io
+            certSecret: postiz-tls
+            maxBodySize: "100m"
+            routes:
+              - {path: "/", upstream: "http://postiz:80", websocket: true, forwardedHost: false}
   - name: temporal-non-prod
     appLabel: temporal
     url: https://go.temporal.io/helm-charts/
@@ -1024,35 +1015,6 @@ projects:
     values: |
       operator:
         replicaCount: 1
-  - name: toolhive-registry-manifests-non-prod
-    appLabel: toolhive-registry
-    url: git@github.com:polarpoint-io/helm-library-manifests.git
-    path: .
-    namespace: toolhive-system
-    targetCluster: https://192.168.11.80:6443
-    labels:
-      service: tooling
-    targetRevision: v2.1.0
-    values: |
-      certificates:
-        - name: mcp-tls
-          namespace: toolhive-system
-          host: mcp.polarpoint.io
-      externalSecrets:
-        - secretName: toolhive-registry-db
-          namespace: toolhive-system
-          refreshInterval: 5m
-          data:
-            - {secretKey: postgres-password, remoteRef: {key: toolhive-registry, property: db-password}}
-            - {secretKey: password, remoteRef: {key: toolhive-registry, property: db-password}}
-      tlsProxies:
-        - name: mcp
-          namespace: toolhive-system
-          host: mcp.polarpoint.io
-          certSecret: mcp-tls
-          maxBodySize: 100m
-          routes:
-            - {path: "/", upstream: "http://toolhive-registry:8080", websocket: true, forwardedHost: false}
   - name: postgresql-non-prod
     appLabel: toolhive-registry
     url: https://charts.bitnami.com/bitnami
@@ -1127,6 +1089,33 @@ projects:
       service:
         type: ClusterIP
         port: 8080
+    extraSources:
+    - url: git@github.com:polarpoint-io/helm-library-manifests.git
+      path: .
+      targetRevision: v2.2.0
+      values: |
+        global:
+          # Lands before the workload that mounts it.
+          syncWave: "-1"
+        certificates:
+          - name: mcp-tls
+            namespace: toolhive-system
+            host: mcp.polarpoint.io
+        externalSecrets:
+          - secretName: toolhive-registry-db
+            namespace: toolhive-system
+            refreshInterval: 5m
+            data:
+              - {secretKey: postgres-password, remoteRef: {key: toolhive-registry, property: db-password}}
+              - {secretKey: password, remoteRef: {key: toolhive-registry, property: db-password}}
+        tlsProxies:
+          - name: mcp
+            namespace: toolhive-system
+            host: mcp.polarpoint.io
+            certSecret: mcp-tls
+            maxBodySize: 100m
+            routes:
+              - {path: "/", upstream: "http://toolhive-registry:8080", websocket: true, forwardedHost: false}
   - name: holmesgpt-runbook-mcp-non-prod-multitenant
     appLabel: holmesgpt-runbook-mcp
     env: non-prod-multitenant
