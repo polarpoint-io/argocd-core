@@ -768,6 +768,24 @@ projects:
         secretStoreRef:
           name: cluster-secrets-store
           kind: ClusterSecretStore
+        # Merges with the chart's own keys (itsm, llm, confluence) - Helm deep
+        # merges maps, so naming one here does not drop the others.
+        keys:
+          chat:
+            remoteKey: platform-agent-stack-chat
+            properties: [SLACK_APP_TOKEN, SLACK_BOT_TOKEN]
+
+      # The Slack front door, over Socket Mode - it dials out, so nothing here
+      # needs to be publicly reachable.
+      #
+      # approvers is the identity check that releases a tier-3 action. It is a
+      # list of Slack member ids, and EMPTY MEANS NOBODY: before this existed the
+      # only approval path was an unauthenticated POST with a UUID, so this is the
+      # one setting that must never default open.
+      chat:
+        provider: slack
+        approvers:
+          - UK8TX02HG
 
       # Durable state for the tier-3 approval queue and the /triage job queue.
       # Without this both are in-memory: a pod restart drops parked approvals and
