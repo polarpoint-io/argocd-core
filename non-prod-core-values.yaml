@@ -1,3 +1,8 @@
 environment: non-prod
 aoa_version: "v1.10.0"        # git tag on polarpoint-io/argocd-app-of-apps
-argocd_chart_revision: "10.2.1"   # argo-helm chart (ArgoCD v3.4.5) - latest published, was 9.5.20 (v3.4.3)
+# argo-helm chart (ArgoCD v3.5.0) - latest published, was 10.2.1 (v3.4.5).
+# Checked before bumping: the only difference in the chart's default values across
+# 10.2.1 -> 10.3.0 is the bundled Redis image tag (8.2.3-alpine -> 8.6.4-alpine).
+# No values keys were renamed or removed, so non-prod-argocd-values.yaml carries
+# over unchanged.
+argocd_chart_revision: "10.3.0"
