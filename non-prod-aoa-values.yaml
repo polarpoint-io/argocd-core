@@ -550,6 +550,15 @@ projects:
       service: controller
     valuesPath: platform-engineering/iac/grafana-provider/non-prod/values.yaml
 
+  - name: crossplane-manifests-non-prod
+    appLabel: crossplane-manifests
+    url: git@github.com:polarpoint-io/helm-library-manifests.git
+    path: .
+    targetRevision: v2.2.0
+    namespace: iac
+    labels:
+      service: controller
+    valuesPath: platform-engineering/iac/crossplane-manifests/non-prod/values.yaml
   - name: crossplane-non-prod
     appLabel: crossplane
     url: https://charts.crossplane.io/stable
@@ -577,11 +586,6 @@ projects:
         requests:
           cpu: 100m
           memory: 256Mi
-    extraSources:
-    - url: git@github.com:polarpoint-io/helm-library-manifests.git
-      path: .
-      targetRevision: v2.2.0
-      valuesPath: platform-engineering/iac/crossplane-manifests/non-prod/values.yaml
   - name: kargo-projects-non-prod
     appLabel: kargo
     url: git@github.com:polarpoint-io/argocd-applications.git
