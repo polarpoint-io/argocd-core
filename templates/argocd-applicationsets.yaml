@@ -1,0 +1,34 @@
+# Applies the ApplicationSets that generate every workload Application in the
+# estate. These used to be parent Applications declared in <env>-aoa-values.yaml,
+# one per (project, cluster); they are now rows in a matrix generator living in
+# polarpoint-io/argocd-applications.
+#
+# It sits in the argocd-config project alongside argocd, argocd-core and
+# argocd-app-of-apps, because what it manages is Argo's own wiring rather than a
+# workload.
+#
+# prune is false deliberately, and matters more here than elsewhere: pruning would
+# delete an ApplicationSet, and deleting an ApplicationSet takes its generated
+# Applications with it. The ApplicationSet itself sets preserveResourcesOnDeletion
+# so the deployed workloads would survive even then, but there is no reason to rely
+# on that as the only line of defence.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-applicationsets
+  namespace: argocd
+spec:
+  source:
+    repoURL: git@github.com:polarpoint-io/argocd-applications.git
+    targetRevision: "{{ .Values.applicationsets_revision | default "main" }}"
+    path: applicationsets
+    directory:
+      recurse: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  project: argocd-config
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
