@@ -169,7 +169,7 @@ projects:
       - name: cert-manager-manifests
         appLabel: cert-manager
         url: git@github.com:polarpoint-io/argocd-applications.git
-        path: apps/foundational/cert-manager-manifests/chart
+        path: security/cert-manager-manifests/non-prod
         namespace: cert-manager
         labels:
           service: foundational
@@ -178,7 +178,7 @@ projects:
 
       - name: local-path-provisioner
         url: git@github.com:polarpoint-io/argocd-applications.git
-        path: apps/foundational/local-path-provisioner/chart
+        path: platform-engineering/local-path-provisioner/non-prod
         namespace: local-path-storage
         labels:
           service: foundational
@@ -207,7 +207,7 @@ projects:
       - name: tailscale-operator-manifests
         appLabel: tailscale-operator
         url: git@github.com:polarpoint-io/argocd-applications.git
-        path: apps/foundational/tailscale-operator-manifests/chart
+        path: security/tailscale-operator-manifests/non-prod
         namespace: tailscale
         labels:
           service: foundational
@@ -239,7 +239,7 @@ projects:
       - name: backstage-manifests-non-prod
         appLabel: backstage
         url: git@github.com:polarpoint-io/argocd-applications.git
-        path: apps/controller/backstage-manifests/non-prod
+        path: platform-engineering/backstage-manifests/non-prod
         namespace: platform
         labels:
           service: platform
@@ -265,14 +265,14 @@ projects:
       - name: controller-nginx-manifests-non-prod
         appLabel: ingress-nginx
         url: git@github.com:polarpoint-io/argocd-applications.git
-        path: apps/controller/controller-nginx-manifests/non-prod
+        path: platform-engineering/controller-nginx-manifests/non-prod
         namespace: ingress-nginx
         labels:
           service: controller
       - name: crossplane-manifests-non-prod
         appLabel: crossplane-manifests
         url: git@github.com:polarpoint-io/argocd-applications.git
-        path: apps/controller/crossplane-manifests/non-prod
+        path: platform-engineering/crossplane-manifests/non-prod
         namespace: iac
         labels:
           service: controller
@@ -306,14 +306,14 @@ projects:
       - name: kargo-manifests-non-prod
         appLabel: kargo
         url: git@github.com:polarpoint-io/argocd-applications.git
-        path: apps/controller/kargo-manifests/non-prod
+        path: platform-engineering/kargo-manifests/non-prod
         namespace: kargo
         labels:
           service: controller
       - name: kargo-projects-non-prod
         appLabel: kargo
         url: git@github.com:polarpoint-io/argocd-applications.git
-        path: apps/controller/kargo-projects/non-prod
+        path: platform-engineering/kargo-projects/non-prod
         namespace: kargo
         labels:
           service: controller
@@ -456,7 +456,7 @@ projects:
       - name: ciso-assistant-postgres-non-prod
         appLabel: ciso-assistant
         url: git@github.com:polarpoint-io/argocd-applications.git
-        path: apps/tooling/ciso-assistant-postgres/non-prod
+        path: security/ciso-assistant-postgres/non-prod
         namespace: ciso-assistant
         targetCluster: https://192.168.11.80:6443
         labels:
@@ -594,7 +594,7 @@ projects:
       - name: postiz-non-prod
         appLabel: postiz
         url: git@github.com:polarpoint-io/argocd-applications.git
-        path: apps/tooling/postiz/non-prod
+        path: platform-engineering/postiz/non-prod
         namespace: postiz
         targetCluster: https://192.168.11.80:6443
         labels:
@@ -713,7 +713,7 @@ projects:
       - name: toolhive-registry-manifests-non-prod
         appLabel: toolhive-registry
         url: git@github.com:polarpoint-io/argocd-applications.git
-        path: apps/tooling/toolhive-registry-manifests/non-prod
+        path: platform-engineering/toolhive-registry-manifests/non-prod
         namespace: toolhive-system
         targetCluster: https://192.168.11.80:6443
         labels:
@@ -796,7 +796,7 @@ projects:
         appLabel: holmesgpt-runbook-mcp
         env: non-prod-multitenant
         url: git@github.com:polarpoint-io/argocd-applications.git
-        path: apps/foundational/holmesgpt-runbook-mcp/non-prod-multitenant
+        path: platform-engineering/holmesgpt-runbook-mcp/non-prod
         namespace: holmesgpt
         targetCluster: https://192.168.11.63:6443
         labels:
