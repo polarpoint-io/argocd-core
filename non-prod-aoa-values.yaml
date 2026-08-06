@@ -485,6 +485,18 @@ projects:
     labels:
       service: platform
     values: "fullnameOverride: backstage\n\nglobal:\n  security:\n    allowInsecureImages: true\n\nbackstage:\n  image:\n    registry: ghcr.io\n    repository: polarpoint-io/backstage\n    tag: \"latest\"\n    pullPolicy: Always\n  containerPorts:\n    backend: 7007\n  command: [\"node\", \"packages/backend\"]\n  args: [\"--config\", \"app-config.yaml\", \"--config\", \"app-config.production.yaml\"]\n  extraEnvVars:\n    - name: POSTGRES_HOST\n      value: backstage-postgresql\n  extraEnvVarsSecrets:\n    - backstage-database-authentication\n    - backstage-kubernetes-authentication\n    - backstage-github-authentication\n  # app-config.yaml / app-config.production.yaml are baked into the image\n  # (see args above) — do NOT mount the old RKE1-era backstage-app-config\n  # ConfigMap over them, it silently shadows every config change baked\n  # into new image builds.\n\npostgresql:\n  enabled: true\n  fullnameOverride: backstage-postgresql\n  image:\n    repository: bitnamilegacy/postgresql\n  auth:\n    username: backstage\n    database: backstage\n    existingSecret: backstage-db\n  primary:\n    persistence:\n      size: 8Gi\n"
+  # Grafana Cloud config as IaC - the counterpart to Alloy, which only ships
+  # telemetry out. EXPERIMENTAL upstream; see the values file.
+  - name: grafana-provider-non-prod
+    appLabel: grafana-provider
+    url: git@github.com:polarpoint-io/helm-library-manifests.git
+    path: .
+    targetRevision: v2.1.0
+    namespace: iac
+    labels:
+      service: controller
+    valuesPath: platform-engineering/iac/grafana-provider/non-prod/values.yaml
+
   - name: crossplane-manifests-non-prod
     appLabel: crossplane-manifests
     url: git@github.com:polarpoint-io/helm-library-manifests.git
@@ -493,49 +505,7 @@ projects:
     labels:
       service: controller
     targetRevision: v2.1.0
-    values: |
-      externalSecrets:
-        - secretName: aws-credentials
-          namespace: iac
-          refreshInterval: 5m
-          annotations: {argocd.argoproj.io/sync-wave: "2"}
-          template:
-            data:
-              credentials: |
-                [default]
-                aws_access_key_id = {{ .accessKeyId }}
-                aws_secret_access_key = {{ .secretAccessKey }}
-          data:
-            - {secretKey: accessKeyId, remoteRef: {key: aws-credentials, property: access-key-id}}
-            - {secretKey: secretAccessKey, remoteRef: {key: aws-credentials, property: secret-access-key}}
-      customResources:
-        - apiVersion: pkg.crossplane.io/v1beta1
-          kind: Function
-          metadata:
-            name: function-patch-and-transform
-            annotations: {argocd.argoproj.io/sync-wave: "1"}
-          spec:
-            package: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform:v0.7.0
-            packagePullPolicy: IfNotPresent
-            revisionActivationPolicy: Automatic
-        - apiVersion: pkg.crossplane.io/v1
-          kind: Provider
-          metadata:
-            name: upbound-provider-family-aws
-            annotations: {argocd.argoproj.io/sync-wave: "1"}
-          spec:
-            package: xpkg.upbound.io/upbound/provider-family-aws:v1.18.0
-            packagePullPolicy: IfNotPresent
-            revisionActivationPolicy: Automatic
-        - apiVersion: aws.upbound.io/v1beta1
-          kind: ProviderConfig
-          metadata:
-            name: default
-            annotations: {argocd.argoproj.io/sync-wave: "3"}
-          spec:
-            credentials:
-              source: Secret
-              secretRef: {namespace: iac, name: aws-credentials, key: credentials}
+    valuesPath: platform-engineering/iac/crossplane-manifests/non-prod/values.yaml
   - name: crossplane-non-prod
     appLabel: crossplane
     url: https://charts.crossplane.io/stable
