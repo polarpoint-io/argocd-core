@@ -802,7 +802,15 @@ projects:
       jsonPointers:
       - /spec/externalName
     values: |
-      itsmProvider: freshservice
+      # This OVERRIDES the chart's own default, so changing itsmProvider in the
+      # chart alone does nothing to this deployment - the Application's inline
+      # values win. Caught 2026-08-18 flipping the chart to Jira and finding the
+      # pod still resolving freshservice-mcp through uvx.
+      #
+      # jira-service-management via Atlassian's Rovo MCP Server, targeting the DO
+      # project. Freshservice's account is suspended (403 account_suspended on
+      # every call), which is what prompted the move.
+      itsmProvider: jira-service-management
       llmProvider: anthropic
 
       # image.repository/tag intentionally not overridden here - the chart's
