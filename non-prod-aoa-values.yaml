@@ -37,6 +37,8 @@ global:
   - url: 'https://prometheus-community.github.io/helm-charts'
   - url: 'https://grafana.github.io/helm-charts'
   - url: 'https://falcosecurity.github.io/charts'
+  - url: 'https://charts.dexidp.io'
+  - url: 'ghcr.io/stacklok/toolhive-cloud-ui'
 
 privateGitCredentialsTemplates:
 - name: polarpoint-io
@@ -77,6 +79,15 @@ publicHelmRepositories:
   url: "https://grafana.github.io/helm-charts"
 - name: falcosecurity
   url: "https://falcosecurity.github.io/charts"
+- name: dexidp
+  url: "https://charts.dexidp.io"
+# The cloud UI chart is pushed to oci://ghcr.io/stacklok/toolhive-cloud-ui, so
+# the OCI repo is the app path and the chart name repeats inside it. That is a
+# different shape from toolhive-registry-server, which sits directly under
+# ghcr.io/stacklok.
+- name: stacklok-toolhive-cloud-ui
+  url: "ghcr.io/stacklok/toolhive-cloud-ui"
+  enableOCI: true
 
 privateHelmRepositories: []
 
@@ -1197,3 +1208,108 @@ projects:
       # skills, connectivity_check, bash) and default k8sRBAC:false (chart's own
       # broad read-only ClusterRole + CRD permissions for argo/flux/etc.) are
       # left at chart defaults - appropriate for a read-only investigation agent.
+
+  - name: dex-non-prod
+    appLabel: dex
+    # The OIDC issuer for this estate. It exists because toolhive-cloud-ui
+    # needs OIDC and GitHub does not speak it - GitHub is plain OAuth2 for user
+    # login, and github.com/.well-known/openid-configuration returns 403. Dex
+    # brokers: OIDC to the app, OAuth2 to GitHub.
+    #
+    # auth.polarpoint.io is also the host non-prod-argocd-values.yaml already
+    # stubs oidc.config against, so ArgoCD SSO can point here without moving.
+    url: https://charts.dexidp.io
+    chart: dex
+    targetRevision: 0.24.1
+    namespace: dex
+    targetCluster: https://192.168.11.80:6443
+    labels:
+      service: tooling
+    valuesPath: platform-engineering/dex/non-prod/values.yaml
+    extraSources:
+      - url: git@github.com:polarpoint-io/helm-library-manifests.git
+        path: .
+        targetRevision: v2.2.0
+        values: |
+          global:
+            # Lands before the workload that mounts it. One block, deliberately:
+            # a second top-level `global:` replaces this one wholesale, and the
+            # sync wave goes with it.
+            syncWave: "-1"
+            secretStore: {name: cluster-secrets-store, kind: ClusterSecretStore}
+            issuer: letsencrypt-dns01
+
+          externalSecrets:
+            - secretName: dex-github
+              namespace: dex
+              refreshInterval: 5m
+              data:
+                # From a GitHub OAuth app on the polarpoint-io org whose
+                # callback URL is exactly https://auth.polarpoint.io/callback.
+                - {secretKey: GITHUB_CLIENT_ID, remoteRef: {key: dex, property: github-client-id}}
+                - {secretKey: GITHUB_CLIENT_SECRET, remoteRef: {key: dex, property: github-client-secret}}
+                # Shared with the UI, which reads this same key as its
+                # OIDC_CLIENT_SECRET. One source of truth so the two ends of the
+                # OAuth exchange cannot drift apart.
+                - {secretKey: TOOLHIVE_CLOUD_UI_CLIENT_SECRET, remoteRef: {key: dex, property: toolhive-cloud-ui-client-secret}}
+
+          certificates:
+            - {name: dex-tls, namespace: dex, host: auth.polarpoint.io}
+
+          tlsProxies:
+            - name: auth
+              namespace: dex
+              host: auth.polarpoint.io
+              certSecret: dex-tls
+              routes:
+                # Dex serves discovery, authorize, token and callback all from
+                # the same root, so one route covers it.
+                - {path: "/", upstream: "http://dex:5556"}
+
+  - name: toolhive-cloud-ui-non-prod
+    appLabel: toolhive-cloud-ui
+    # Browser front end for the MCP registry. Same namespace as the registry
+    # server so API_BASE_URL can stay a plain in-cluster Service name.
+    url: ghcr.io/stacklok/toolhive-cloud-ui
+    chart: toolhive-cloud-ui
+    targetRevision: 0.6.2
+    namespace: toolhive-system
+    targetCluster: https://192.168.11.80:6443
+    labels:
+      service: tooling
+    valuesPath: platform-engineering/toolhive-cloud-ui/non-prod/values.yaml
+    extraSources:
+      - url: git@github.com:polarpoint-io/helm-library-manifests.git
+        path: .
+        targetRevision: v2.2.0
+        values: |
+          global:
+            syncWave: "-1"
+            secretStore: {name: cluster-secrets-store, kind: ClusterSecretStore}
+            issuer: letsencrypt-dns01
+
+          externalSecrets:
+            - secretName: toolhive-cloud-ui-auth
+              namespace: toolhive-system
+              refreshInterval: 5m
+              data:
+                # The same value Dex holds as its staticClient secret, read from
+                # the one key rather than copied into two.
+                - {secretKey: OIDC_CLIENT_SECRET, remoteRef: {key: dex, property: toolhive-cloud-ui-client-secret}}
+                # Encrypts the session cookies. Sessions are cookie-only here -
+                # no DATABASE_URL - so rotating this signs everyone out.
+                - {secretKey: BETTER_AUTH_SECRET, remoteRef: {key: toolhive-cloud-ui, property: better-auth-secret}}
+
+          certificates:
+            - {name: toolhive-cloud-ui-tls, namespace: toolhive-system, host: registry.polarpoint.io}
+
+          tlsProxies:
+            - name: registry
+              namespace: toolhive-system
+              host: registry.polarpoint.io
+              certSecret: toolhive-cloud-ui-tls
+              routes:
+                # forwardedHost left at its default: Better Auth compares the
+                # incoming host against BETTER_AUTH_URL when validating the
+                # OAuth callback, and a stripped header fails that check.
+                - {path: "/", upstream: "http://toolhive-cloud-ui:80", websocket: true}
