@@ -752,9 +752,10 @@ projects:
       targetRevision: v2.2.0
       values: |
         global:
-          # Lands before the workload that mounts it.
+          # Lands before the workload that mounts it. One block, deliberately:
+          # a second top-level `global:` replaces this one wholesale, and the
+          # sync wave goes with it.
           syncWave: "-1"
-        global:
           secretStore:
             name: cluster-secrets-store
             kind: ClusterSecretStore
@@ -947,9 +948,10 @@ projects:
       targetRevision: v2.2.0
       values: |
         global:
-          # Lands before the workload that mounts it.
+          # Lands before the workload that mounts it. One block, deliberately:
+          # a second top-level `global:` replaces this one wholesale, and the
+          # sync wave goes with it.
           syncWave: "-1"
-        global:
           secretStore: {name: cluster-secrets-store, kind: ClusterSecretStore}
           issuer: letsencrypt-dns01
 
