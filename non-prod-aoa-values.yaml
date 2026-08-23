@@ -752,9 +752,10 @@ projects:
       targetRevision: v2.2.0
       values: |
         global:
-          # Lands before the workload that mounts it.
+          # Lands before the workload that mounts it. One block, deliberately:
+          # a second top-level `global:` replaces this one wholesale, and the
+          # sync wave goes with it.
           syncWave: "-1"
-        global:
           secretStore:
             name: cluster-secrets-store
             kind: ClusterSecretStore
@@ -947,9 +948,10 @@ projects:
       targetRevision: v2.2.0
       values: |
         global:
-          # Lands before the workload that mounts it.
+          # Lands before the workload that mounts it. One block, deliberately:
+          # a second top-level `global:` replaces this one wholesale, and the
+          # sync wave goes with it.
           syncWave: "-1"
-        global:
           secretStore: {name: cluster-secrets-store, kind: ClusterSecretStore}
           issuer: letsencrypt-dns01
 
@@ -1313,3 +1315,73 @@ projects:
                 # incoming host against BETTER_AUTH_URL when validating the
                 # OAuth callback, and a stripped header fails that check.
                 - {path: "/", upstream: "http://toolhive-cloud-ui:80", websocket: true}
+  - name: mirofish-non-prod-multitenant
+    appLabel: mirofish
+    env: non-prod-multitenant
+    # The chart lives in its own repo rather than here: it is authored, versioned
+    # and CI-tested on its own cadence, so it is an upstream chart that happens to
+    # be ours. Pinned to a tag - tracking main would redeploy on every commit.
+    url: git@github.com:polarpoint-io/helm-mirofish.git
+    path: charts/mirofish-offline
+    targetRevision: v0.2.0
+    namespace: mirofish
+    targetCluster: https://192.168.11.63:6443
+    labels:
+      service: tooling
+    # Sizing, model choice and storage live in argocd-applications rather than
+    # inline here: they are the parts most likely to be tuned, and an env folder
+    # is what lets prod differ without a second chart.
+    valuesPath: platform-engineering/mirofish/non-prod/values.yaml
+    extraSources:
+      - url: git@github.com:polarpoint-io/helm-library-manifests.git
+        path: .
+        targetRevision: v2.2.0
+        values: |
+          global:
+            # Lands before the workload that mounts it. Note this is ONE global
+            # block - a second one silently replaces the first and drops the
+            # sync wave, which is what has happened on ciso-assistant and postiz.
+            syncWave: "-1"
+            secretStore: {name: cluster-secrets-store, kind: ClusterSecretStore}
+            issuer: letsencrypt-dns01
+
+          externalSecrets:
+            # Neo4j only reads NEO4J_AUTH when it initialises its store. Rotating
+            # this after the first sync changes what the API presents, not what
+            # the database expects, and the API's init container then blocks
+            # forever on a password the database has never heard of.
+            - secretName: mirofish-neo4j
+              namespace: mirofish
+              refreshInterval: 5m
+              data:
+                - {secretKey: neo4j-password, remoteRef: {key: mirofish, property: neo4j-password}}
+
+            - secretName: mirofish-secrets
+              namespace: mirofish
+              refreshInterval: 5m
+              data:
+                # Required by the OpenAI client, ignored by Ollama. Any non-empty
+                # value works; it exists because the client refuses to start
+                # without one.
+                - {secretKey: llm-api-key, remoteRef: {key: mirofish, property: llm-api-key}}
+                # Must be stable. ArgoCD renders with `helm template`, where the
+                # chart cannot read back the previous value, so left to itself it
+                # would mint a new Flask session key on every reconcile.
+                - {secretKey: flask-secret-key, remoteRef: {key: mirofish, property: flask-secret-key}}
+
+          certificates:
+            - {name: mirofish-tls, namespace: mirofish, host: simulate.polarpoint.io}
+
+          tlsProxies:
+            - name: simulate
+              namespace: mirofish
+              host: simulate.polarpoint.io
+              certSecret: mirofish-tls
+              # The backend accepts 50MB documents; anything smaller here fails
+              # the upload at the proxy, before the app ever sees it.
+              maxBodySize: "50m"
+              routes:
+                # One route: the web pod's nginx already proxies /api to the API
+                # Service, so the same URL works through this proxy and under a
+                # plain port-forward.
+                - {path: "/", upstream: "http://mirofish-web:80", websocket: true}
