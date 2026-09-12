@@ -1391,8 +1391,7 @@ projects:
     # mirofish below: authored, versioned and CI-tested on its own cadence.
     url: git@github.com:polarpoint-io/agenthive.git
     path: helm/agenthive
-    targetRevision: main  # TODO: pin to the first release tag once semantic-release
-                          # runs there (needs POL_GH_TOKEN - see agenthive's release.yml)
+    targetRevision: v1.0.0
     namespace: agenthive
     targetCluster: https://192.168.11.63:6443
     labels:
