@@ -1385,3 +1385,35 @@ projects:
                 # Service, so the same URL works through this proxy and under a
                 # plain port-forward.
                 - {path: "/", upstream: "http://mirofish-web:80", websocket: true}
+  - name: agenthive-non-prod
+    appLabel: agenthive
+    # The chart lives in its own repo rather than here - same reasoning as
+    # mirofish below: authored, versioned and CI-tested on its own cadence.
+    url: git@github.com:polarpoint-io/agenthive.git
+    path: helm/agenthive
+    targetRevision: v1.0.0
+    namespace: agenthive
+    targetCluster: https://192.168.11.63:6443
+    labels:
+      service: tooling
+    valuesPath: platform-engineering/agenthive/non-prod/values.yaml
+    extraSources:
+      - url: git@github.com:polarpoint-io/helm-library-manifests.git
+        path: .
+        targetRevision: v2.2.0
+        values: |
+          global:
+            syncWave: "-1"
+            secretStore: {name: cluster-secrets-store, kind: ClusterSecretStore}
+            issuer: letsencrypt-dns01
+
+          certificates:
+            - {name: agenthive-tls, namespace: agenthive, host: hive.polarpoint.io}
+
+          tlsProxies:
+            - name: agenthive
+              namespace: agenthive
+              host: hive.polarpoint.io
+              certSecret: agenthive-tls
+              routes:
+                - {path: "/", upstream: "http://agenthive:8790"}
