@@ -1398,7 +1398,15 @@ projects:
     # both: a numeric container UID/GID, and the release job's missing
     # packages:write permission that was silently failing every chart
     # publish.
-    targetRevision: v1.1.2
+    #
+    # v1.6.0 adds the standalone review-UI deployment below (ui.enabled) -
+    # note images.yml *still* isn't auto-triggering off semantic-release's
+    # tag push despite using POL_GH_TOKEN (a real PAT, not GITHUB_TOKEN) -
+    # every tag from v1.2.0 through v1.6.0 needed the same manual
+    # workflow_dispatch v1.0.0/v1.1.2 already required. Root cause not yet
+    # found; re-run `gh workflow run images.yml --ref vX.Y.Z` (or the
+    # Actions UI) before bumping targetRevision again until this is fixed.
+    targetRevision: v1.6.0
     namespace: agenthive
     targetCluster: https://192.168.11.63:6443
     labels:
@@ -1416,6 +1424,7 @@ projects:
 
           certificates:
             - {name: agenthive-tls, namespace: agenthive, host: hive.polarpoint.io}
+            - {name: agenthive-ui-tls, namespace: agenthive, host: hive-ui.polarpoint.io}
 
           tlsProxies:
             - name: agenthive
@@ -1424,3 +1433,13 @@ projects:
               certSecret: agenthive-tls
               routes:
                 - {path: "/", upstream: "http://agenthive:8790"}
+            # Standalone review UI (see agenthive's ui/Dockerfile and
+            # helm/agenthive values.yaml's ui.* block) - a separate
+            # tlsProxy name so this doesn't collide with the one above
+            # (same namespace, same Application).
+            - name: agenthive-ui
+              namespace: agenthive
+              host: hive-ui.polarpoint.io
+              certSecret: agenthive-ui-tls
+              routes:
+                - {path: "/", upstream: "http://agenthive-ui:8080"}
