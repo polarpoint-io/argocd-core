@@ -1418,7 +1418,13 @@ projects:
             - {name: agenthive-tls, namespace: agenthive, host: hive.polarpoint.io}
 
           tlsProxies:
-            - name: agenthive
+            # Distinct from the app's own Service name (also "agenthive",
+            # from fullnameOverride) - reusing it here rendered two
+            # /Service/agenthive/agenthive resources and ArgoCD flagged a
+            # RepeatedResourceWarning. Every other app in this file names
+            # its proxy after the hostname for the same reason (platform,
+            # grc, schedule, mcp, auth, registry, ...).
+            - name: hive
               namespace: agenthive
               host: hive.polarpoint.io
               certSecret: agenthive-tls
