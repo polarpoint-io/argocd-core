@@ -1391,7 +1391,14 @@ projects:
     # mirofish below: authored, versioned and CI-tested on its own cadence.
     url: git@github.com:polarpoint-io/agenthive.git
     path: helm/agenthive
-    targetRevision: v1.0.0
+    # v1.0.0's image was never actually published (images.yml only ever ran
+    # via manual workflow_dispatch - see agenthive's own history) and its
+    # chart shipped runAsNonRoot: true with no runAsUser, which kubelet
+    # can't reconcile against the image's non-numeric USER. v1.1.2 fixes
+    # both: a numeric container UID/GID, and the release job's missing
+    # packages:write permission that was silently failing every chart
+    # publish.
+    targetRevision: v1.1.2
     namespace: agenthive
     targetCluster: https://192.168.11.63:6443
     labels:
