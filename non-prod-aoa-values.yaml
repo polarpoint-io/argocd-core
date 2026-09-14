@@ -1443,3 +1443,48 @@ projects:
               certSecret: agenthive-ui-tls
               routes:
                 - {path: "/", upstream: "http://agenthive-ui:8080"}
+
+          # DNS: hive.polarpoint.io/hive-ui.polarpoint.io had no public
+          # record at all until now - point them at the Tailscale CGNAT IPs
+          # the tailscale-operator already assigned the tlsProxies' Services
+          # above (agenthive/agenthive-ui tailnet devices, tag:k8s), the
+          # same pattern grc.polarpoint.io already uses. Crossplane-managed
+          # via the AWS provider installed by the crossplane-manifests-non-
+          # prod Application (platform-engineering/iac/crossplane-
+          # manifests/non-prod/values.yaml) - that Application's
+          # upbound-provider-aws-route53 Provider must sync before this
+          # CRD exists. It's a separate Application so there's a race: this
+          # may show a transient sync error until that lands, but automated
+          # sync retries on its own (selfHeal:false just means no *forced*
+          # re-sync, not no retry).
+          customResources:
+            - apiVersion: route53.aws.upbound.io/v1beta1
+              kind: Record
+              metadata:
+                name: agenthive-hive-polarpoint-io
+              spec:
+                forProvider:
+                  zoneId: ZND0T184EWHJG
+                  region: eu-west-1
+                  name: hive.polarpoint.io
+                  type: A
+                  ttl: 300
+                  records:
+                    - "100.95.235.85"
+                providerConfigRef:
+                  name: default
+            - apiVersion: route53.aws.upbound.io/v1beta1
+              kind: Record
+              metadata:
+                name: agenthive-hive-ui-polarpoint-io
+              spec:
+                forProvider:
+                  zoneId: ZND0T184EWHJG
+                  region: eu-west-1
+                  name: hive-ui.polarpoint.io
+                  type: A
+                  ttl: 300
+                  records:
+                    - "100.126.224.114"
+                providerConfigRef:
+                  name: default
