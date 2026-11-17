@@ -1488,3 +1488,53 @@ projects:
                     - "100.126.224.114"
                 providerConfigRef:
                   name: default
+  - name: opentrainer-non-prod
+    appLabel: opentrainer
+    url: git@github.com:polarpoint-io/argocd-applications.git
+    path: platform-engineering/opentrainer/non-prod
+    namespace: opentrainer
+    targetCluster: https://192.168.11.80:6443
+    labels:
+      service: tooling
+    values: |
+      api:
+        env:
+          RP_ID: trainer.polarpoint.io
+          ORIGIN: https://trainer.polarpoint.io
+          BRAND_NAME: "Jane Bains Wellness"
+          BRAND_SHORT_NAME: "JBW"
+          BRAND_TAGLINE: "Personal training, your way"
+          BRAND_LOGO_URL: "/brand-jbw-logo.png"
+          BRAND_ACCENT: "#d897a0"
+          BRAND_THEME_COLOR: "#645454"
+    extraSources:
+    - url: git@github.com:polarpoint-io/helm-library-manifests.git
+      path: .
+      targetRevision: v2.2.0
+      values: |
+        global:
+          syncWave: "-1"
+          secretStore: {name: cluster-secrets-store, kind: ClusterSecretStore}
+          issuer: letsencrypt-dns01
+
+        certificates:
+          - name: opentrainer-tls
+            namespace: opentrainer
+            host: trainer.polarpoint.io
+
+        tlsProxies:
+          - name: opentrainer
+            namespace: opentrainer
+            host: trainer.polarpoint.io
+            certSecret: opentrainer-tls
+            routes:
+              - {path: "/", upstream: "http://opentrainer:80"}
+
+        # No DNS customResources here, unlike agenthive's two hive.polarpoint.io/
+        # hive-ui.polarpoint.io records - trainer.polarpoint.io is assumed to already
+        # resolve the same way schedule.polarpoint.io/grc.polarpoint.io etc. do (the
+        # majority pattern in this file, no explicit Route53 Record needed). If it
+        # doesn't resolve once this syncs, it needs the same kind of explicit
+        # route53.aws.upbound.io/v1beta1 Record agenthive added, pointed at whatever
+        # Tailscale CGNAT IP the operator assigns the Service created above - check
+        # `kubectl get svc -n opentrainer opentrainer-tls` (or similar) for that IP.
