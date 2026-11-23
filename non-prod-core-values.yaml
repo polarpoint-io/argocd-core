@@ -1,8 +1,15 @@
 environment: non-prod
 aoa_version: "v1.14.0"        # git tag on polarpoint-io/argocd-app-of-apps
-# argo-helm chart (ArgoCD v3.5.0) - latest published, was 10.2.1 (v3.4.5).
-# Checked before bumping: the only difference in the chart's default values across
-# 10.2.1 -> 10.3.0 is the bundled Redis image tag (8.2.3-alpine -> 8.6.4-alpine).
-# No values keys were renamed or removed, so non-prod-argocd-values.yaml carries
-# over unchanged.
-argocd_chart_revision: "10.3.0"
+# argo-helm chart 10.18.2 (ArgoCD v3.6.2) - latest published, was 10.3.0 (v3.5.0).
+# v3.5.0 carries the four CVSS 9.9 repo-server CVEs fixed in v3.5.4 / v3.6.x.
+# Checked before bumping (helm template with non-prod-argocd-values.yaml):
+# - no chart values keys renamed or removed between 10.3.0 and 10.18.2; only
+#   additions (pdb.unhealthyPodEvictionPolicy, vpa.recommenders, redis.tls, ...)
+# - rendered diff: image tags (argocd v3.6.2, dex v2.46.1, redis 8.6.4), new
+#   optional argocd-cmd-params-cm env refs, seccompProfile RuntimeDefault on the
+#   pods that lacked it, a new argocd-application-controller metrics Service,
+#   argocd-server ClusterRole gains update on */finalizers, additive CRD fields.
+# - 3.6 behaviour change: apps with ServerSideApply=true now use server-side
+#   diff. Here that is only external-secrets; opt out per app with
+#   argocd.argoproj.io/compare-options: ServerSideDiff=false if it misbehaves.
+argocd_chart_revision: "10.18.2"
