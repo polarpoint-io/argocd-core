@@ -460,7 +460,7 @@ projects:
     extraSources:
     - url: git@github.com:polarpoint-io/helm-library-manifests.git
       path: .
-      targetRevision: v2.2.0
+      targetRevision: v2.3.0
       values: |
         global:
           # Everything this chart renders lands before the workload.
@@ -749,7 +749,7 @@ projects:
     extraSources:
     - url: git@github.com:polarpoint-io/helm-library-manifests.git
       path: .
-      targetRevision: v2.2.0
+      targetRevision: v2.3.0
       values: |
         global:
           # Lands before the workload that mounts it. One block, deliberately:
@@ -945,7 +945,7 @@ projects:
     extraSources:
     - url: git@github.com:polarpoint-io/helm-library-manifests.git
       path: .
-      targetRevision: v2.2.0
+      targetRevision: v2.3.0
       values: |
         global:
           # Lands before the workload that mounts it. One block, deliberately:
@@ -1131,7 +1131,7 @@ projects:
     extraSources:
     - url: git@github.com:polarpoint-io/helm-library-manifests.git
       path: .
-      targetRevision: v2.2.0
+      targetRevision: v2.3.0
       values: |
         global:
           # Lands before the workload that mounts it.
@@ -1231,7 +1231,7 @@ projects:
     extraSources:
       - url: git@github.com:polarpoint-io/helm-library-manifests.git
         path: .
-        targetRevision: v2.2.0
+        targetRevision: v2.3.0
         values: |
           global:
             # Lands before the workload that mounts it. One block, deliberately:
@@ -1283,7 +1283,7 @@ projects:
     extraSources:
       - url: git@github.com:polarpoint-io/helm-library-manifests.git
         path: .
-        targetRevision: v2.2.0
+        targetRevision: v2.3.0
         values: |
           global:
             syncWave: "-1"
@@ -1335,7 +1335,7 @@ projects:
     extraSources:
       - url: git@github.com:polarpoint-io/helm-library-manifests.git
         path: .
-        targetRevision: v2.2.0
+        targetRevision: v2.3.0
         values: |
           global:
             # Lands before the workload that mounts it. Note this is ONE global
@@ -1415,7 +1415,7 @@ projects:
     extraSources:
       - url: git@github.com:polarpoint-io/helm-library-manifests.git
         path: .
-        targetRevision: v2.2.0
+        targetRevision: v2.3.0
         values: |
           global:
             syncWave: "-1"
@@ -1510,7 +1510,7 @@ projects:
     extraSources:
     - url: git@github.com:polarpoint-io/helm-library-manifests.git
       path: .
-      targetRevision: v2.2.0
+      targetRevision: v2.3.0
       values: |
         global:
           syncWave: "-1"
