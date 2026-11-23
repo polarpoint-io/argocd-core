@@ -903,7 +903,10 @@ projects:
 
       image:
         repository: ghcr.io/gitroomhq/postiz-app
-        tag: "latest"
+        # Pinned: "latest" let a pod restart pull v2.26.0 unannounced, whose
+        # startup `prisma db push` stopped on a data-loss prompt and crash-looped.
+        # Bump deliberately, and check the schema change before you do.
+        tag: "v2.26.0"
 
       env:
         MAIN_URL: "https://schedule.polarpoint.io"
